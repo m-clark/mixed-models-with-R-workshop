@@ -1,0 +1,105 @@
+---
+title: "<span class='title'>Mixed Models</span>"
+subtitle: "<span class='subtitle'>with R!</span>"
+author: "<span class='author'>Michael Clark</span>"
+institute: "<span class='institute'>m-clark.github.io <br> @statsdatasci <br> CSCAR, UM</span>"
+date: "<span class='date'>2020-10-13</span>"
+css: style.css
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: zenburn
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: inverse
+
+background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, crayon.enabled = FALSE) # see https://github.com/hadley/mastering-shiny/issues/132
+
+knitr::opts_chunk$set(
+  # code
+  echo      = T,
+  eval      = F,
+  message   = F,
+  warning   = F,
+  error     = F,
+  comment   = NA,
+  R.options = list(width = 220),
+  # viz
+  dev.args  = list(bg = 'transparent'),
+  dev       = 'svglite',
+  fig.align = 'center',
+  out.width = '75%',
+  fig.asp   = .75,
+  # cache
+  cache.rebuild = F,
+  cache         = F
+)
+
+kable_df = function(data, digits=3, ...) {
+  kableExtra::kable(
+    data,
+    digits = digits,
+    format = 'html',
+    booktabs = T,
+    # longtable = F,
+    linesep = "",
+    ...,
+  ) %>% 
+    kableExtra::kable_styling(full_width = F)
+}
+
+perc = function(x, digits = 1) paste(rnd(x*100, digits = digits), '%')
+```
+
+```{r setup-extra, echo=FALSE, eval=TRUE}
+xaringanExtra::use_xaringan_extra(
+  c(
+    "tile_view",
+    "animate_css",
+    "tachyons",
+    'clipboard',
+    'fit_screen',
+    'webcam',
+    'panelset'
+  )
+)
+
+xaringanExtra::use_logo(
+  image_url = 'https://raw.githubusercontent.com/m-clark/m-clark.github.io/master/img/mc_logo.png',
+  link_url = 'https://m-clark.github.io',
+  width = '5%',
+  position =  xaringanExtra::css_position(bottom = "-3em", left = "1em"),
+  exclude_class = c("title-slide")
+)
+
+xaringanExtra::use_animate_css()
+
+xaringanExtra::style_share_again(
+  share_buttons = c("twitter", "linkedin", "pocket")
+)
+```
+
+
+
+```{r setup-packs}
+library(tidyverse)
+```
+
+
+---
+class: inverse middle center
+
+### *Overview of Random Effects*
+
+### *More Models*
+
+### *Common Extensions*
+
+### *Issues*
+
+### *Bayesian Approaches*

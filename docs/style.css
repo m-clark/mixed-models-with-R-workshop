@@ -1,0 +1,163 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Audiowide|Alex+Brush|Roboto+Condensed|Open+Sans|Lato|Lora|Fira+Sans|Yellowtail|Condiment|Mrs+Sheppards|Mr+Dafoe");
+@import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Mono:400,700);
+@import url(https://use.fontawesome.com/releases/v5.14.0/css/all.css);
+
+
+body { 
+  font-family: Roboto, 'Droid Serif', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Microsoft YaHei', 'Songti SC', serif; 
+  font-size: 32pt;
+  
+}
+
+em {
+  color: #ECD078FF;
+  font-style: normal;
+  font-weight: 700;
+  text-shadow: 0 0 10px #EBA42BFF;
+}
+
+
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Yanone Kaffeesatz';
+  font-weight: normal;
+  color: #b20076;
+}
+
+.tidyverse {
+  background-size: cover;
+}
+
+.title-slide {
+  background-image: url(img/sunset-vector.jpg);
+  background-size: cover;
+  vertical-align: middle;
+}
+
+.title-slide h1, h2, h3 {
+  font-family: Audiowide;
+  text-shadow: 0 0 10px #EBA42BFF;
+}
+
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+
+
+.inverse {
+  background-color: #542437FF; /*#1A1A1AFF*/
+  color: #d6d6d6;
+  text-shadow: 0 0 20px #333;
+}
+
+.inverse h1, .inverse h2, .inverse h3 {
+  color: #EBA42BFF; /*#b20076*/
+}
+
+.inverse h1 {
+  text-shadow: 0 0 5px #EBA42BFF; /*#b20076*/
+}
+
+.remark-slide-content {
+    font-size: 32px;
+}
+
+/* background of slide */
+.remark-slide-container {
+    display: block;
+    background-color: #422B3AFF;
+}
+
+.remark-slide-scaler {
+    box-shadow: 0 0 30px #EBA42BFF;
+}
+
+.remark-code, .remark-inline-code { 
+  font-family: 'Source Code Pro', 'Roboto Mono', 'Lucida Console', Monaco, monospace; 
+  
+}
+
+.remark-code-line-highlighted {
+    background-color: #EBEBEBFF;
+    color: #3f3f3f;
+}
+
+ul li ul li {
+  font-size: 20px;
+}
+
+blockquote {
+  border-left: solid 5px #EBA42BFF;
+  font-size: 80%;
+}
+
+/* names */
+
+.pack {
+  color: #1f65b7;
+}
+
+.func {
+  color: #ECD078FF;
+}
+
+
+/* title slide */
+.title {
+  margin-bottom: 0;
+  font-size: 50pt;  
+  position: relative;
+  bottom: 50px;
+  display: inline-block;
+}
+.subtitle {
+  font-size: 28pt;
+  position: relative;
+  bottom: 75px;
+  display: inline-block;
+}
+.author {
+  font-size: 28pt;
+  font-family: 'Mrs Sheppards', Yellowtail, 'Mr Dafoe', Condiment, Roboto, Sans ;
+  position: relative;
+  bottom: -25px;
+  margin-bottom: 50px;
+  display: inline-block;
+}
+.institute {
+  font-size: 12pt;
+}
+.date {
+  font-size: 12pt;
+}
+
+/*fontawesome*/
+
+.fa, .far, .fas, .fab {
+  color: #EBA42BFF;
+  text-shadow: 0 0 10px #EBA42BFF;
+}
+
+/* other special slides*/
+
+.other-stuff {
+  font-size: 16pt;
+}
+
+.last-slide {
+  background-image: url(img/zoom.gif);
+  background-size: cover;
+}
+
+.slide-title-90 h1 {
+  font-size: 140%;
+}
+
+.code-only {
+  margin: 0;
+  padding: 0;
+  background-color: #3f3f3f; /* zenburn*/
+}
