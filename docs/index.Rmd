@@ -91,6 +91,7 @@ library(tidyverse)
 library(plotly)
 library(visibly)
 library(scico)
+library(mixedup)
 ```
 
 
@@ -98,9 +99,9 @@ library(scico)
 class: inverse middle center
 
 
-### *Overview of Random Effects*
+### **Overview of Mixed Models**
 
-### *More Models*
+### *More Random Effects*
 
 ### *Common Extensions*
 
@@ -158,7 +159,8 @@ Misc
 - <span class="pack" style = "">mixedup</span>
     - cleaner results for basic models
     - `remotes::install_github('m-clark/mixedup`)
-- <span class="pack" style = "">lmerTools</span>
+- <span class="pack" style = "">lmerTest</span>
+- <span class="pack" style = "">merTools</span>
 ]
 
 ---
@@ -416,10 +418,8 @@ $$b_{\mathrm{int\_student}} = b_{\mathrm{intercept}} + \mathrm{effect}_{\mathrm{
 After 'plugging in' the second level part to the first, it is identical to the previous.
 
 
-
-
 ---
-class: inverse
+class: img-slide
 
 # Getting Started: Application
 
@@ -436,34 +436,15 @@ init = gpa %>%
   group_by(student, select) 
 
 init %>%
-  plot_ly %>%
-  add_lines(
-    x =  ~ occasion,
-    y =  ~ gpa,
-    size = I(.5),
-    opacity = .35,
-    color =  ~ select,
-    size = ~ sz,
-    colors = scico::scico(2, begin = .25),
-    showlegend = F
-  ) %>%
-  add_lines(
-    x =  ~ occasion,
-    y =  ~ gpa,
-    opacity = .35,
-    color =  ~ select,
-    size = I(2),
-    colors = scico::scico(2, begin = .25),
-    data = filter(init, select == TRUE),
-    showlegend = F
-  ) %>%
-  add_lines(
-    x =  ~ occasion,
-    y =  ~ all,
-    color = I(palettes$stan_red$stan_red),
-    opacity = .70
-  ) %>%
-  theme_plotly()
+  ggplot(aes(occasion, gpa)) +
+  geom_line(aes(group = student), alpha = .05) +
+  geom_line(
+    aes(group = student),
+    color = '#542437FF',
+    data = gpa %>% filter(student %in% sample(student, 10))
+  ) +
+  geom_smooth(color = '#b20076', method = 'lm', se = F) +
+  theme_clean()
 ```
 
 
@@ -486,5 +467,201 @@ coef_lm = coef(gpa_lm)
 
 ```{r eval=TRUE}
 gpa_mixed = lmer(gpa ~ occasion + (1 | student), data = gpa)
+
 summary(gpa_mixed)
 ```
+
+---
+class: inverse 
+
+# Getting Started: Application
+
+Fixed effects:
+
+```{r eval=T}
+extract_fixed_effects(gpa_mixed)
+```
+
+Just our standard regression coefficients!
+- Interpreted the same
+
+---
+class: inverse 
+
+# Getting Started: Application
+
+Variance components:
+
+```{r eval=T}
+# lme4::VarCorr(gpa_mixed)
+extract_vc(gpa_mixed)
+```
+
+These are the standard deviation/variance of the random effects.
+
+The residual SD is akin to that in the `lm` result:
+
+```{r eval=T}
+summary(gpa_lm)$sigma
+```
+
+
+---
+class: inverse 
+
+# Getting Started: Application
+
+These are the random effects for students:
+
+```{r eval=TRUE}
+# ranef(gpa_mixed)
+extract_random_effects(gpa_mixed)
+```
+
+---
+class: inverse 
+
+# Getting Started: Application
+
+These are the random coefficients:
+- In this case, intercepts
+- coef = intercept + effect
+
+```{r eval=TRUE}
+# coef(gpa_mixed)
+extract_random_coefs(gpa_mixed)
+```
+
+---
+class: inverse 
+
+# Getting Started: Application
+
+Prediction can include random effects or not.
+
+If they do not, essentially the same as `lm`.
+
+But the random effects will produce better predictions.
+
+```{r eval=T}
+predict_no_re = predict(gpa_mixed, re.form=NA)
+predict_lm    = predict(gpa_lm)
+predict_with_re = predict(gpa_mixed)
+```
+
+---
+class: img-slide
+
+```{r eval=T, echo=FALSE}
+tibble(
+  student = as.character(gpa$student),
+  lm = predict_lm,
+  `lmer no re` = predict_no_re,
+  `lmer with re` = predict_with_re
+) %>%
+  mutate_if(is.numeric, round, digits=2) %>%
+  head(30) %>%
+  kable_df()
+```
+
+---
+class: img-slide 
+
+# Getting Started: Application
+
+Which do you think has the better fit? 
+- One line for all? Separate for each student?
+
+```{r echo=F, eval=T, out.width='150%'}
+init = tibble(
+  student = as.character(gpa$student),
+  occasion = gpa$occasion,
+  gpa = gpa$gpa,
+  lm = predict_lm,
+  mixed = predict_with_re
+) %>%
+  filter(student %in% 1:3) %>%
+  pivot_longer(lm:mixed, names_to = 'type', values_to = 'prediction')
+
+init %>%
+  ggplot(aes(x = occasion)) +
+  geom_point(aes(y = gpa, color = student),
+             size = 3,
+             data = filter(init, type == 'mixed')) +
+  geom_line(aes(y = prediction, color = student, group = student), 
+    data = filter(init, type == 'lm'),
+    color = '#ff5500',
+    size = 2
+  ) +
+  geom_line(aes(y = prediction, color = student, group = student),
+            data = filter(init, type == 'mixed')) +
+  scale_color_scico_d(begin = .2,
+                      end = .9,
+                      palette = 'hawaii') +
+  labs(subtitle = '') +
+  theme_clean()
+```
+
+---
+class: inverse 
+
+# Getting Started: Cluster level covariates
+
+Thus far we've had only one covariate:
+- Time indicator
+- Varies with outcome
+
+We can have cluster-level covariates also
+- Just add as you would any other
+
+```{r}
+lmer(gpa ~ occasion + sex + (1|student), gpa)
+```
+
+---
+class: inverse 
+
+# Getting Started: Exercises
+
+
+### Sleep
+
+For this exercise, we'll use the sleep study data from the <span class="pack">lme4</span> package.  The following describes it.
+
+> The average reaction time per day for subjects in a sleep deprivation study. On day 0 the subjects had their normal amount of sleep. Starting that night they were restricted to 3 hours of sleep per night. The observations represent the average reaction time (in milliseconds) on a series of tests given each day to each subject.
+
+---
+class: inverse 
+
+# Getting Started: Exercises
+
+After loading the package, the data can be loaded as follows. 
+
+```{r sleepstudy}
+library(lme4)
+data("sleepstudy")
+```
+
+1. Run a regression with Reaction as the target variable and Days as the predictor. 
+
+2. Run a mixed model with a random intercept for Subject.
+
+3. Interpret the variance components and fixed effects.
+
+---
+class: inverse 
+
+# Getting Started: Exercises
+
+
+Rerun the mixed model with the GPA data adding the cluster level covariate of `sex`, or high school GPA (`highgpa`), or both.  Interpret all aspects of the results.
+
+```{r gpa_cluster, echo=F, eval=FALSE}
+gpa_mixed_cluster_level = lmer(gpa ~ occasion + sex + highgpa + (1|student), gpa)
+summary(gpa_mixed_cluster_level)
+```
+
+What happened to the student variance after adding cluster level covariates to the model?
+
+
+

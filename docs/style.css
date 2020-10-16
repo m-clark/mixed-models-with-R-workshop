@@ -86,12 +86,24 @@ h1, h2, h3, h4, h5 {
 }
 
 ul li ul li {
-  font-size: 20px;
+  font-size: 80%;
 }
 
 blockquote {
   border-left: solid 5px #EBA42BFF;
   font-size: 80%;
+}
+
+div.center {
+ text-align: center; 
+}
+
+.smaller90 {
+    font-size: 90%;
+}
+
+.smaller50 {
+    font-size: 50%;
 }
 
 /* names */
@@ -104,6 +116,15 @@ blockquote {
   color: #ECD078FF;
 }
 
+/* forumulas */
+.remark-slide .mjx-chtml {
+  font-size: 80%; 
+}
+
+/* inline */
+.remark-slide .mjx-char {
+  
+}
 
 /* title slide */
 .title {
@@ -152,12 +173,18 @@ blockquote {
   background-size: cover;
 }
 
+.img-slide {
+  color: #3f3f3f;
+}
+
+
 .slide-title-90 h1 {
   font-size: 140%;
 }
 
 .code-only {
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 20px;
   background-color: #3f3f3f; /* zenburn*/
 }
+
