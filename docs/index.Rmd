@@ -1,0 +1,490 @@
+---
+title: "<span class='title'>Mixed Models</span>"
+subtitle: "<span class='subtitle'>with R!</span>"
+author: "<span class='author'>Michael Clark</span>"
+institute: "<span class='institute'>m-clark.github.io <br> @statsdatasci <br> CSCAR, UM</span>"
+date: "<span class='date'>2020-10-21</span>"
+css: style.css
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: zenburn
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: inverse
+
+background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, crayon.enabled = FALSE) # see https://github.com/hadley/mastering-shiny/issues/132
+
+knitr::opts_chunk$set(
+  # code
+  echo      = T,
+  eval      = F,
+  message   = F,
+  warning   = F,
+  error     = F,
+  comment   = NA,
+  R.options = list(width = 220),
+  # viz
+  dev.args  = list(bg = 'transparent'),
+  dev       = 'svglite',
+  fig.align = 'center',
+  out.width = '75%',
+  fig.asp   = .75,
+  # cache
+  cache.rebuild = F,
+  cache         = F
+)
+
+kable_df = function(data, digits=3, ...) {
+  kableExtra::kable(
+    data,
+    digits = digits,
+    format = 'html',
+    booktabs = T,
+    # longtable = F,
+    linesep = "",
+    ...,
+  ) %>% 
+    kableExtra::kable_styling(full_width = F)
+}
+
+perc = function(x, digits = 1) paste(rnd(x*100, digits = digits), '%')
+```
+
+```{r setup-extra, echo=FALSE, eval=TRUE}
+xaringanExtra::use_xaringan_extra(
+  c(
+    "tile_view",
+    "animate_css",
+    "tachyons",
+    'clipboard',
+    'fit_screen',
+    'webcam',
+    'panelset'
+  )
+)
+
+xaringanExtra::use_logo(
+  image_url = 'https://raw.githubusercontent.com/m-clark/m-clark.github.io/master/img/mc_logo.png',
+  link_url = 'https://m-clark.github.io',
+  width = '5%',
+  position =  xaringanExtra::css_position(bottom = "-3em", left = "1em"),
+  exclude_class = c("title-slide")
+)
+
+xaringanExtra::use_animate_css()
+
+xaringanExtra::style_share_again(
+  share_buttons = c("twitter", "linkedin", "pocket")
+)
+```
+
+
+
+```{r setup-packs, include = F}
+library(tidyverse)
+library(plotly)
+library(visibly)
+library(scico)
+```
+
+
+---
+class: inverse middle center
+
+
+### *Overview of Random Effects*
+
+### *More Models*
+
+### *Common Extensions*
+
+### *Issues*
+
+### *Bayesian Approaches*
+
+
+---
+class: inverse middle center animated rollIn rollOut # https://animate.style/
+
+
+# Getting Started
+
+<br>
+<br>
+![](img/multilevel1.png)
+
+
+
+---
+class: inverse smaller50
+
+# Getting Started
+
+.pull-left[
+Required for workshop:
+
+```{r}
+install.packages('lme4')
+```
+
+Others you have already:
+
+- <span class="pack" style = "">nlme</span>
+    - included with base R
+    
+- <span class="pack" style = "">mgcv</span>
+    - included with base R
+]
+
+.pull-right[
+Other recommended (in general)
+
+- <span class="pack" style = "">glmmTMB</span>
+
+- <span class="pack" style = "">rstanarm</span>
+    - Bayesian, requires <span class="pack" style = "">rstan</span>
+    
+- <span class="pack" style = "">brms</span>   
+    - Bayesian, requires <span class="pack" style = "">rstan</span>
+
+Misc
+
+- <span class="pack" style = "">mixedup</span>
+    - cleaner results for basic models
+    - `remotes::install_github('m-clark/mixedup`)
+- <span class="pack" style = "">lmerTools</span>
+]
+
+---
+class: inverse
+
+# Getting Started: A starting point
+
+Run the following models and summarize.
+- Use <span class="func" style = "">summary</span> on the models.
+- <span class="objclass" style = "">`sleepstudy`</span> is in the <span class="pack" style = "">lme4</span> package.
+
+```{r eval=TRUE}
+library(lme4)
+
+mod_lm = lm(Reaction ~ Days, data = sleepstudy)
+mod_lmer = lmer(Reaction ~ Days + (1|Subject), data = sleepstudy)
+```
+
+What's the same?
+
+What is different?
+
+---
+class: img-slide
+
+<!-- # Getting Started: A starting point -->
+
+```{r eval=TRUE, echo=FALSE, out.width='125%'}
+library(brolgar)
+
+sleepstudy_ts = as_tsibble(sleepstudy, key = Subject, index = Days)
+ 
+sleepstudy_ts %>% 
+  ggplot(aes(x = Days, y = Reaction, color = Subject)) +
+  geom_line() +
+  geom_point() +
+  geom_smooth(aes(), method = 'lm', se = FALSE) +
+  facet_strata(n_strata = 18, nrow = 3, along = Subject) +
+  scale_color_scico_d() +
+  scale_x_continuous(breaks = c(0, 3, 6, 9)) +
+  guides(color = 'none') +
+  theme_clean()
+```
+
+
+---
+class: inverse
+
+# Getting Started: Terminology
+
+All describe types of what we'd generally call:
+
+*<div class="center">mixed models</div>*
+
+- Variance components
+- Random intercepts and slopes
+- Random effects
+- Random coefficients
+- Varying coefficients
+- Intercepts- and/or slopes-as-outcomes
+- Hierarchical linear models
+- Multilevel models
+- Growth curve models
+- Mixed effects models
+
+---
+class: inverse
+
+# Getting Started: Terminology
+
+The 'mixed' part comes from a mixture of:
+- *fixed effects*
+- *random effects*
+
+Perhaps a better way to phrase:
+- *general* 
+    - Applies to all observations
+- *specific*
+    - Applies to a particular group
+
+---
+class: inverse
+
+# Getting Started: Clustering
+
+Specific effects come from natural clustering
+
+- Repeated measures
+- Spatial/geography
+- Social/teams
+- Items on a test
+
+---
+class: inverse
+
+# Getting Started: GPA Data
+
+Data Description
+
+
+><span class="" style = "font-size: 75%">For the following we'll assess factors predicting college grade point average (GPA).  Each of the 200 students is assessed for six occasions (each semester for the first three years), so we have observations clustered within students. We have other variables such as job status, sex, and high school GPA.  Some will be in both labeled and numeric form.</span>
+
+```{r}
+library(tidyverse)
+
+load('data/gpa.RData')
+
+head(gpa)
+```
+
+```{r eval=TRUE, echo = F}
+library(tidyverse)
+
+load('../data/gpa.RData')
+
+head(gpa)
+```
+
+
+
+---
+class: inverse
+
+# Getting Started: Standard Regression
+
+Scary formulas! 👻
+
+$$\mathscr{gpa} = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} + \epsilon$$
+
+We have coefficients ( $b$ ) for the intercept and the effect of time.  The error ( $\epsilon$ ) is assumed to be normally distributed with mean 0 and some standard deviation $\sigma$.
+
+$$\epsilon \sim \mathcal{N}(0, \sigma)$$
+
+
+---
+class: inverse
+
+# Getting Started: Standard Regression
+
+Alternatively:
+
+$$\mathscr{gpa} \sim \mathcal{N}(\mu, \sigma)$$
+
+$$\mu = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion}$$
+---
+class: inverse
+
+# Getting Started: Standard Regression
+
+Run it!
+
+```{r eval=TRUE}
+gpa_lm = lm(gpa ~ occasion, data = gpa)
+summary(gpa_lm)
+```
+
+---
+class: inverse
+
+# Getting Started: Single Random Effect
+
+But the observations are clustered
+- Not independent
+- Correlated within a cluster
+
+--
+
+Regression by cluster?
+
+- Issues:
+    - Not easily summarized with many groups
+    - Often little data within each cluster 
+    - Overfit
+    - Ignores what clusters have in common
+
+
+---
+class: img-slide
+
+
+Think that model is adequate?
+
+```{r echo=FALSE, eval=TRUE, out.width='150%'}
+gpa_ts <- as_tsibble(
+  gpa,
+  key = student,
+  index = occasion,
+  regular = TRUE
+)
+
+gpa_feat = gpa_ts %>% 
+  features(gpa, feat_spread)
+
+library(gghighlight)
+gpa_ts %>% 
+  features(gpa, feat_spread) %>% 
+  left_join(gpa_ts) %>% 
+  mutate(var_type = NA,
+         var_type = case_when(
+           var > quantile(var, .95) ~ 'Variable',
+           var < quantile(var, .05) ~ 'Constant'
+         )) %>% 
+  ggplot(aes(x = occasion, y = gpa, color = var_type, group = student)) +
+  geom_line() +
+  gghighlight(!is.na(var_type), unhighlighted_params = list(size = .1), use_direct_label = F) +
+  geom_point(alpha = .5) +
+  labs(subtitle = 'Comparing highly variable vs. fairly constant') +
+  scale_color_scico_d(end = .6) + 
+  # guides(color = guide_colorbar(title = NULL)) +
+  theme_clean()
+```
+
+
+---
+class: inverse
+
+# Getting Started: Mixed Model
+
+Add a student effect:
+
+$$\mathscr{gpa} = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} + (\mathrm{effect}_{\mathscr{student}} + \epsilon)$$
+
+Assume the following distribution for it:  
+
+
+$$\mathrm{effect}_{\mathrm{student}} \sim \mathcal{N}(0, \tau)$$
+
+---
+class: inverse
+
+# Getting Started: Mixed Model
+
+
+If we rearrange it, we can instead focus on model coefficients, rather than as an additional source of error.
+
+$$\mathscr{gpa} = (b_{\mathrm{intercept}} + \mathrm{effect}_{\mathscr{student}}) + b_{\mathrm{occ}}\cdot \mathscr{occasion} +  \epsilon$$
+$$\mathscr{gpa} = b_{\mathrm{int\_student}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} +  \epsilon$$
+
+$$b_{\mathrm{int\_student}} \sim \mathcal{N}(b_{\mathrm{intercept}}, \tau)$$
+
+---
+class: inverse
+
+# Getting Started: Mixed Model
+
+Another way of showing the mixed model: *multilevel modeling* 
+- two part regression model
+    - one at the observation level
+    - one at the student level
+
+$$\mathrm{gpa} = b_{\mathrm{int\_student}} + b_{\mathrm{occ}}\cdot \mathrm{occasion} + \epsilon$$
+
+$$b_{\mathrm{int\_student}} = b_{\mathrm{intercept}} + \mathrm{effect}_{\mathrm{student}}$$
+
+After 'plugging in' the second level part to the first, it is identical to the previous.
+
+
+
+
+---
+class: inverse
+
+# Getting Started: Application
+
+```{r spaghetti, echo=FALSE, eval=TRUE}
+set.seed(1234)
+gpa_lm = lm(gpa ~ occasion, data = gpa)
+# sample_students = gpa %>% filter(student %in% sample(1:200, 10))
+# occasion_sample = gpa$occasion[gpa$student %in% sample_students$student]
+# gpa_sample = gpa$gpa[gpa$student %in% sample_students$student]
+init = gpa %>%
+  modelr::add_predictions(gpa_lm, var = 'all') %>%
+  mutate(select = factor(student %in% sample(1:200, 10)),
+         sz = c(.5, 1)[select]) %>%
+  group_by(student, select) 
+
+init %>%
+  plot_ly %>%
+  add_lines(
+    x =  ~ occasion,
+    y =  ~ gpa,
+    size = I(.5),
+    opacity = .35,
+    color =  ~ select,
+    size = ~ sz,
+    colors = scico::scico(2, begin = .25),
+    showlegend = F
+  ) %>%
+  add_lines(
+    x =  ~ occasion,
+    y =  ~ gpa,
+    opacity = .35,
+    color =  ~ select,
+    size = I(2),
+    colors = scico::scico(2, begin = .25),
+    data = filter(init, select == TRUE),
+    showlegend = F
+  ) %>%
+  add_lines(
+    x =  ~ occasion,
+    y =  ~ all,
+    color = I(palettes$stan_red$stan_red),
+    opacity = .70
+  ) %>%
+  theme_plotly()
+```
+
+
+
+---
+class: inverse code-only
+
+Add the student effect!
+
+```{r gpa-group-lm, echo=FALSE}
+gpa_lm_by_group = gpa %>%
+  split(.$student) %>%
+  map_df( ~ data.frame(t(coef(
+    lm(gpa ~ occasion, data = .x)
+  )))) %>%
+  rename(Intercept = X.Intercept.)
+
+coef_lm = coef(gpa_lm)
+```
+
+```{r eval=TRUE}
+gpa_mixed = lmer(gpa ~ occasion + (1 | student), data = gpa)
+summary(gpa_mixed)
+```
