@@ -86,7 +86,7 @@ xaringanExtra::style_share_again(
 
 
 
-```{r setup-packs, include = F}
+```{r load-packs, include=FALSE, eval=TRUE}
 library(tidyverse)
 library(plotly)
 library(visibly)

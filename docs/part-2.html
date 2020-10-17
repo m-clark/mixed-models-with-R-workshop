@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Mixed Models</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Michael Clark" />
+    <meta name="date" content="2020-10-21" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/xaringanExtra-webcam/webcam.js"></script>
+    <script id="xaringanExtra-webcam-options" type="application/json">{"width":"200","height":"200","margin":"1em"}</script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span class="title">Mixed Models</span>
+## <span class="subtitle">with R!</span>
+### <span class="author">Michael Clark</span>
+### <span class="institute">m-clark.github.io <br> <span class="citation">@statsdatasci</span> <br> CSCAR, UM</span>
+### <span class="date">2020-10-21</span>
+
+---
+
+class: inverse
+
+background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
+
+
+
+<div>
+<style type="text/css">.xaringan-extra-logo {
+width: 5%;
+height: 128px;
+z-index: 0;
+background-image: url(https://raw.githubusercontent.com/m-clark/m-clark.github.io/master/img/mc_logo.png);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+bottom:-3em;left:1em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide)')
+        .forEach(function (slide) {
+          const logo = document.createElement('a')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = 'https://m-clark.github.io'
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div><style>.shareagain-bar {
+--shareagain-foreground: rgb(255, 255, 255);
+--shareagain-background: rgba(0, 0, 0, 0.5);
+--shareagain-facebook: none;
+--shareagain-pinterest: none;
+--shareagain-reddit: none;
+}</style>
+
+
+
+
+
+
+---
+class: inverse middle center
+
+
+
+### *Overview of Random Effects*
+
+### &lt;span class="" style = ""&gt;**More Random Effects**&lt;/span&gt;
+
+### *Common Extensions*
+
+### *Issues*
+
+### *Bayesian Approaches*
+
+
+
+---
+class: img-slide
+
+&lt;img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%"&gt;
+
+---
+class: inverse 
+
+# More: Application
+
+So far we've assumed a constant trend over semester for each student.
+
+--
+
+&lt;br&gt;
+
+Should we?
+
+---
+class: inverse
+
+Let's add random slopes to the mix!
+
+
+
+
+
+
+```r
+gpa_mixed =  lmer(gpa ~ occasion + (1 + occasion | student), data = gpa)
+```
+
+Examine the fixed effects: 
+
+
+```r
+extract_fixed_effects(gpa_mixed)
+```
+
+```
+# A tibble: 2 x 7
+  term      value    se     t p_value lower_2.5 upper_97.5
+  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+1 Intercept 2.60  0.018 142.        0     2.56       2.64 
+2 occasion  0.106 0.006  18.1       0     0.095      0.118
+```
+
+
+
+
+---
+class: inverse 
+
+# More: Application
+
+Examine the variance components:
+
+
+```r
+extract_vc(gpa_mixed, show_cor = TRUE, ci_level = FALSE)
+```
+
+```
+$`Variance Components`
+     group    effect variance    sd var_prop
+1  student Intercept    0.045 0.213    0.491
+2  student  occasion    0.005 0.067    0.049
+3 Residual              0.042 0.206    0.460
+
+$Cor
+$Cor$student
+          Intercept occasion
+Intercept     1.000   -0.098
+occasion     -0.098    1.000
+```
+
+What is our interpretation? &lt;span class="" style = "font-size: 200%"&gt;🤔&lt;/span&gt;
+
+
+---
+class: inverse 
+
+# More: Application
+
+The intercept variance tells us...
+
+--
+
+how much that starting GPA bounces around from student to student.
+- Occasion starts at zero
+
+---
+class: inverse 
+
+# More: Application
+
+The slope variance/sd tells us...
+
+--
+
+how much that starting GPA bounces around from student to student.
+- Is it large?
+    - Different scale than intercept
+    - Compare to the actual value 0.11
+    - Given a normal distribution, we could expect most students to fall somewhere between a flat effect of zero to more than double the population average
+    - `\(\pm\)` 2\*sd (0.067) -&gt; -0.03 : 0.24
+    
+---
+class: inverse
+
+# More: Mixed vs. Many
+
+
+
+*Regularization, shrinkage, partial-pooling*
+
+&lt;img src="img/pooling1.png" style="display:block; margin: 0 auto; width: 200%;"&gt;
+
+---
+class: img-slide
+
+
+
+&lt;img src="part-2_files/figure-html/unnamed-chunk-8-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
+
+---
+class: img-slide
+
+&lt;img src="part-2_files/figure-html/unnamed-chunk-9-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: inverse
+
+# Summary of Random Slopes
+
+
+*Richly Parameterized Linear Models*
+
+Relative to a standard regression we get...
+- Extra variance parameters
+    - Adds to our understanding of the sources of uncertainty in the model
+- We can get the subjects specific effects
+  - And their correlation
+- We can use that information to get better predictions. 
+
+--
+
+What’s not to like? 😄
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "zenburn",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
