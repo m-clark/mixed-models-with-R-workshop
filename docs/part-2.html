@@ -104,9 +104,9 @@ class: inverse middle center
 
 
 ---
-class: img-slide
+class: img-slide-from-doc
 
-&lt;img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%"&gt;
+&lt;img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%;"&gt;
 
 ---
 class: inverse 
@@ -190,11 +190,11 @@ The intercept variance tells us...
 
 --
 
-how much that starting GPA bounces around from student to student.
+... how much that starting GPA bounces around from student to student.
 - Occasion starts at zero
 
 ---
-class: inverse 
+class: inverse slide-font-75
 
 # More: Application
 
@@ -202,7 +202,7 @@ The slope variance/sd tells us...
 
 --
 
-how much that starting GPA bounces around from student to student.
+... how much that starting GPA bounces around from student to student.
 - Is it large?
     - Different scale than intercept
     - Compare to the actual value 0.11
@@ -238,6 +238,13 @@ class: img-slide
 
 
 ---
+class: middle img-slide-from-doc
+
+
+&lt;img src="img/shrinkage/baseline.gif" style="display:block; margin: 0 auto; width: 250%"&gt;
+
+
+---
 class: inverse
 
 # Summary of Random Slopes
@@ -255,6 +262,41 @@ Relative to a standard regression we get...
 --
 
 What’s not to like? 😄
+
+
+
+---
+class: inverse 
+
+# Exercises
+
+#### Sleep revisited
+
+Run the sleep study model with random coefficient for the Days effect, and interpret the results.  What is the correlation between the intercept and Days random effects?  Use the &lt;span class="func"&gt;ranef&lt;/span&gt; and &lt;span class="func"&gt;coef&lt;/span&gt; functions on the model you've created to inspect the individual specific effects. What do you see?
+
+
+```r
+library(lme4)
+data("sleepstudy")
+```
+
+---
+class: inverse 
+
+# Exercises
+
+#### Sleep revisited
+
+In the following, replace &lt;span class="objclass"&gt;model&lt;/span&gt; with the name of your model object. Run each line, inspecting the result of each as you go along. 
+
+
+```r
+re = ranef(model)$Subject
+fe = fixef(model)
+apply(re, 1, function(x) x + fe) %&gt;% t
+```
+
+The above code adds the fixed effects to each row of the random effects (the &lt;span class="func"&gt;t&lt;/span&gt; just transposes the result). What is the result compared to what you saw before?
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

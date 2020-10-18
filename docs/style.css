@@ -188,6 +188,11 @@ div .datatables {
   padding-left: 20px;
 }
 
+.img-slide-from-doc {
+  color: #3f3f3f;
+  background-color: #fffff8;
+}
+
 .slide-less-pad {
   padding-left: 20px;
 }
@@ -199,6 +204,14 @@ div .datatables {
 
 .slide-font-75  {
   font-size: 75%;
+}
+
+.slide-font-66  {
+  font-size: 66%;
+}
+
+.slide-font-50  {
+  font-size: 50%;
 }
 
 .code-only {

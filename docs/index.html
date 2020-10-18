@@ -289,6 +289,7 @@ Alternatively:
 `$$\mathscr{gpa} \sim \mathcal{N}(\mu, \sigma)$$`
 
 `$$\mu = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion}$$`
+
 ---
 class: inverse
 
@@ -347,7 +348,7 @@ Regression by cluster?
 class: img-slide
 
 
-Think that model is adequate?
+Think that standard model is adequate?
 
 &lt;img src="index_files/figure-html/unnamed-chunk-7-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
 
@@ -372,28 +373,34 @@ class: inverse
 # Getting Started: Mixed Model
 
 
-If we rearrange it, we can instead focus on model coefficients, rather than as an additional source of error.
+Rearrange it!
 
 `$$\mathscr{gpa} = (b_{\mathrm{intercept}} + \mathrm{effect}_{\mathscr{student}}) + b_{\mathrm{occ}}\cdot \mathscr{occasion} +  \epsilon$$`
 `$$\mathscr{gpa} = b_{\mathrm{int\_student}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} +  \epsilon$$`
 
 `$$b_{\mathrm{int\_student}} \sim \mathcal{N}(b_{\mathrm{intercept}}, \tau)$$`
+&lt;br&gt;
+Can now focus on model coefficients
+- Rather than as another source of 'error'
 
 ---
-class: inverse
+class: inverse slide-font-66
 
 # Getting Started: Mixed Model
 
-Another way of showing the mixed model: *multilevel modeling* 
-- two part regression model
-    - one at the observation level
-    - one at the student level
+Another way of showing the mixed model: 
+
+*&lt;div style = "text-align:center"&gt;multilevel modeling&lt;/div&gt;*
+
+Two part regression model
+  - one at the observation level
+  - one at the student level
 
 `$$\mathrm{gpa} = b_{\mathrm{int\_student}} + b_{\mathrm{occ}}\cdot \mathrm{occasion} + \epsilon$$`
 
 `$$b_{\mathrm{int\_student}} = b_{\mathrm{intercept}} + \mathrm{effect}_{\mathrm{student}}$$`
 
-After 'plugging in' the second level part to the first, it is identical to the previous.
+After 'plugging in' the second level part to the first, the model is identical to the previous.
 
 
 ---
@@ -408,7 +415,7 @@ class: img-slide
 ---
 class: inverse code-only
 
-Add the student effect!
+Add a student effect!
 
 
 
@@ -455,6 +462,7 @@ Fixed effects:
 
 
 ```r
+# lme4::fixef(gpa_mixed)
 extract_fixed_effects(gpa_mixed)
 ```
 
@@ -490,19 +498,10 @@ extract_vc(gpa_mixed)
 
 These are the standard deviation/variance of the random effects.
 
-The residual SD is akin to that in the `lm` result:
-
-
-```r
-summary(gpa_lm)$sigma
-```
-
-```
-[1] 0.3487043
-```
+The residual SD is akin to that in the `lm` result
 
 ---
-class: inverse 
+class: inverse slide-font-75
 
 # Getting Started: Application
 
@@ -519,6 +518,9 @@ Can also be interpreted as a correlation.
 - Correlation of observations w/in a student
 - Called the *intraclass correlation*
 - Assumed constant across observations
+
+We'll come back to this... 
+&lt;!-- &lt;img src="img/back.jpg" style="display:inline; margin: 0 auto; width:10%"&gt; --&gt;
 
 
 ---
@@ -596,8 +598,8 @@ But the random effects will produce better predictions.
 
 
 ```r
-predict_no_re = predict(gpa_mixed, re.form=NA)
-predict_lm    = predict(gpa_lm)
+predict_lm      = predict(gpa_lm)
+predict_no_re   = predict(gpa_mixed, re.form=NA)
 predict_with_re = predict(gpa_mixed)
 ```
 
@@ -805,7 +807,7 @@ class: img-slide
 Which do you think has the better fit? 
 - One line for all? Separate for each student?
 
-&lt;img src="index_files/figure-html/unnamed-chunk-17-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse 

@@ -302,6 +302,7 @@ class: inverse
 Examine the fixed effects: 
 
 ```{r}
+# lme4::fixef(nurses_hierarchical)
 extract_fixed_effects(nurses_hierarchical)
 ```
 
@@ -698,11 +699,11 @@ class: inverse slide-font-75 slide-title-90
 
 # Generalized Linear Models
 
-Interpretation of fixed effects are similar as GLM
+Interpretation of fixed effects similar to GLM
 
 However, these are not population averages
 
-They are the effect conditional on the random effects
+Conditional on the random effects:
 - Not exactly the same as they are in LM
 - Slightly larger vs. GEE or basic logistic
 

@@ -305,6 +305,7 @@ Alternatively:
 $$\mathscr{gpa} \sim \mathcal{N}(\mu, \sigma)$$
 
 $$\mu = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion}$$
+
 ---
 class: inverse
 
@@ -341,7 +342,7 @@ Regression by cluster?
 class: img-slide
 
 
-Think that model is adequate?
+Think that standard model is adequate?
 
 ```{r echo=FALSE, eval=TRUE, out.width='150%'}
 gpa_ts <- as_tsibble(
@@ -394,28 +395,34 @@ class: inverse
 # Getting Started: Mixed Model
 
 
-If we rearrange it, we can instead focus on model coefficients, rather than as an additional source of error.
+Rearrange it!
 
 $$\mathscr{gpa} = (b_{\mathrm{intercept}} + \mathrm{effect}_{\mathscr{student}}) + b_{\mathrm{occ}}\cdot \mathscr{occasion} +  \epsilon$$
 $$\mathscr{gpa} = b_{\mathrm{int\_student}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} +  \epsilon$$
 
 $$b_{\mathrm{int\_student}} \sim \mathcal{N}(b_{\mathrm{intercept}}, \tau)$$
+<br>
+Can now focus on model coefficients
+- Rather than as another source of 'error'
 
 ---
-class: inverse
+class: inverse slide-font-66
 
 # Getting Started: Mixed Model
 
-Another way of showing the mixed model: *multilevel modeling* 
-- two part regression model
-    - one at the observation level
-    - one at the student level
+Another way of showing the mixed model: 
+
+*<div style = "text-align:center">multilevel modeling</div>*
+
+Two part regression model
+  - one at the observation level
+  - one at the student level
 
 $$\mathrm{gpa} = b_{\mathrm{int\_student}} + b_{\mathrm{occ}}\cdot \mathrm{occasion} + \epsilon$$
 
 $$b_{\mathrm{int\_student}} = b_{\mathrm{intercept}} + \mathrm{effect}_{\mathrm{student}}$$
 
-After 'plugging in' the second level part to the first, it is identical to the previous.
+After 'plugging in' the second level part to the first, the model is identical to the previous.
 
 
 ---
@@ -452,7 +459,7 @@ init %>%
 ---
 class: inverse code-only
 
-Add the student effect!
+Add a student effect!
 
 ```{r gpa-group-lm, echo=FALSE}
 gpa_lm_by_group = gpa %>%
@@ -479,6 +486,7 @@ class: inverse
 Fixed effects:
 
 ```{r eval=T}
+# lme4::fixef(gpa_mixed)
 extract_fixed_effects(gpa_mixed)
 ```
 
@@ -502,7 +510,7 @@ These are the standard deviation/variance of the random effects.
 The residual SD is akin to that in the `lm` result
 
 ---
-class: inverse 
+class: inverse slide-font-75
 
 # Getting Started: Application
 
@@ -516,6 +524,9 @@ Can also be interpreted as a correlation.
 - Correlation of observations w/in a student
 - Called the *intraclass correlation*
 - Assumed constant across observations
+
+We'll come back to this... 
+<!-- <img src="img/back.jpg" style="display:inline; margin: 0 auto; width:10%"> -->
 
 
 ---
@@ -556,8 +567,8 @@ If they do not, essentially the same as `lm`.
 But the random effects will produce better predictions.
 
 ```{r eval=T}
-predict_no_re = predict(gpa_mixed, re.form=NA)
-predict_lm    = predict(gpa_lm)
+predict_lm      = predict(gpa_lm)
+predict_no_re   = predict(gpa_mixed, re.form=NA)
 predict_with_re = predict(gpa_mixed)
 ```
 
@@ -597,9 +608,13 @@ init = tibble(
 
 init %>%
   ggplot(aes(x = occasion)) +
-  geom_point(aes(y = gpa, color = student),
-             size = 3,
-             data = filter(init, type == 'mixed')) +
+  geom_point(
+    aes(y = gpa, color = student),
+    size = 3,
+    position = position_jitter(width = 0, height = .05),
+    alpha = .75,
+    data = filter(init, type == 'lm')
+  ) +
   geom_line(aes(y = prediction, color = student, group = student), 
     data = filter(init, type == 'lm'),
     color = '#ff5500',

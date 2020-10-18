@@ -117,9 +117,9 @@ class: inverse middle center
 
 
 ---
-class: img-slide
+class: img-slide-from-doc
 
-<img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%">
+<img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%;">
 
 ---
 class: inverse 
@@ -182,11 +182,11 @@ The intercept variance tells us...
 
 --
 
-how much that starting GPA bounces around from student to student.
+... how much that starting GPA bounces around from student to student.
 - Occasion starts at zero
 
 ---
-class: inverse 
+class: inverse slide-font-75
 
 # More: Application
 
@@ -194,7 +194,7 @@ The slope variance/sd tells us...
 
 --
 
-how much that starting GPA bounces around from student to student.
+... how much that starting GPA bounces around from student to student.
 - Is it large?
     - Different scale than intercept
     - Compare to the actual value `r round(fixef(gpa_mixed)[2], 2)`
@@ -356,6 +356,13 @@ gpa %>%
   ) +
   theme_clean()
 ```
+
+
+---
+class: middle img-slide-from-doc
+
+
+<img src="img/shrinkage/baseline.gif" style="display:block; margin: 0 auto; width: 250%">
 
 
 ---
