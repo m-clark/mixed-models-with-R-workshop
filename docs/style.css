@@ -162,6 +162,12 @@ div.center {
   text-shadow: 0 0 10px #EBA42BFF;
 }
 
+/* DT */
+div .datatables {
+  font-size: 12pt;
+}
+
+
 /* other special slides*/
 
 .other-stuff {
@@ -177,9 +183,22 @@ div.center {
   color: #3f3f3f;
 }
 
+.img-slide-less-pad {
+  color: #3f3f3f;
+  padding-left: 20px;
+}
+
+.slide-less-pad {
+  padding-left: 20px;
+}
+
 
 .slide-title-90 h1 {
   font-size: 140%;
+}
+
+.slide-font-75  {
+  font-size: 75%;
 }
 
 .code-only {

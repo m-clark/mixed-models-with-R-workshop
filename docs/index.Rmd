@@ -499,11 +499,23 @@ extract_vc(gpa_mixed)
 
 These are the standard deviation/variance of the random effects.
 
-The residual SD is akin to that in the `lm` result:
+The residual SD is akin to that in the `lm` result
 
-```{r eval=T}
-summary(gpa_lm)$sigma
+---
+class: inverse 
+
+# Getting Started: Application
+
+```{r echo = F, eval=T}
+extract_vc(gpa_mixed)
 ```
+
+The proportion of variance attributable to students: ~`r extract_vc(gpa_mixed, ci_level=0)$var_prop[1]*100`%
+
+Can also be interpreted as a correlation.
+- Correlation of observations w/in a student
+- Called the *intraclass correlation*
+- Assumed constant across observations
 
 
 ---

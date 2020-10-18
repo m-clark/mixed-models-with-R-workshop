@@ -501,6 +501,25 @@ summary(gpa_lm)$sigma
 [1] 0.3487043
 ```
 
+---
+class: inverse 
+
+# Getting Started: Application
+
+
+```
+     group    effect variance    sd sd_2.5 sd_97.5 var_prop
+1  student Intercept    0.064 0.252  0.225   0.282    0.523
+2 Residual              0.058 0.241  0.231   0.252    0.477
+```
+
+The proportion of variance attributable to students: ~52.3%
+
+Can also be interpreted as a correlation.
+- Correlation of observations w/in a student
+- Called the *intraclass correlation*
+- Assumed constant across observations
+
 
 ---
 class: inverse 
@@ -786,7 +805,7 @@ class: img-slide
 Which do you think has the better fit? 
 - One line for all? Separate for each student?
 
-&lt;img src="index_files/figure-html/unnamed-chunk-16-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-17-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse 

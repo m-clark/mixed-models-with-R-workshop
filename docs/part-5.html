@@ -28,7 +28,7 @@
 class: center, middle, inverse, title-slide
 
 # <span class="title">Mixed Models</span>
-## <span class="subtitle">Random Slopes</span>
+## <span class="subtitle">Bonus<br>😄</span>
 ### <span class="author">Michael Clark</span>
 ### <span class="institute">m-clark.github.io <br> <span class="citation">@statsdatasci</span> <br> CSCAR, UM</span>
 ### <span class="date">2020-10-21</span>
@@ -85,7 +85,6 @@ bottom:-3em;left:1em;
 
 
 
-
 ---
 class: inverse middle center
 
@@ -93,168 +92,91 @@ class: inverse middle center
 
 ### *Overview of Random Effects*
 
-### &lt;span class="" style = ""&gt;**More Random Effects**&lt;/span&gt;
+### *More Random Effects*
 
 ### *Common Extensions*
 
 ### *Issues*
 
-### *Bayesian Approaches*
-
-
-
----
-class: img-slide
-
-&lt;img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%"&gt;
-
----
-class: inverse 
-
-# More: Application
-
-So far we've assumed a constant trend over semester for each student.
-
---
-
-&lt;br&gt;
-
-Should we?
-
----
-class: inverse
-
-Let's add random slopes to the mix!
-
-
-
-
-
-
-```r
-gpa_mixed =  lmer(gpa ~ occasion + (1 + occasion | student), data = gpa)
-```
-
-Examine the fixed effects: 
-
-
-```r
-# lme4::fixef(gpa_mixed)
-extract_fixed_effects(gpa_mixed)
-```
-
-```
-# A tibble: 2 x 7
-  term      value    se     t p_value lower_2.5 upper_97.5
-  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-1 Intercept 2.60  0.018 142.        0     2.56       2.64 
-2 occasion  0.106 0.006  18.1       0     0.095      0.118
-```
-
----
-class: inverse 
-
-# More: Application
-
-Examine the variance components:
-
-
-```r
-# lme4::VarCorr(gpa_mixed)
-extract_vc(gpa_mixed, show_cor = TRUE, ci_level = FALSE)
-```
-
-```
-$`Variance Components`
-     group    effect variance    sd var_prop
-1  student Intercept    0.045 0.213    0.491
-2  student  occasion    0.005 0.067    0.049
-3 Residual              0.042 0.206    0.460
-
-$Cor
-$Cor$student
-          Intercept occasion
-Intercept     1.000   -0.098
-occasion     -0.098    1.000
-```
-
-What is our interpretation? &lt;span class="" style = "font-size: 200%"&gt;🤔&lt;/span&gt;
+### **Bonus!**
 
 
 ---
-class: inverse 
+class: inverse middle center animated fadeIn fadeOut # https://animate.style/ 
 
-# More: Application
-
-The intercept variance tells us...
-
---
-
-how much that starting GPA bounces around from student to student.
-- Occasion starts at zero
-
----
-class: inverse 
-
-# More: Application
-
-The slope variance/sd tells us...
-
---
-
-how much that starting GPA bounces around from student to student.
-- Is it large?
-    - Different scale than intercept
-    - Compare to the actual value 0.11
-    - Given a normal distribution, we could expect most students to fall somewhere between a flat effect of zero to more than double the population average
-    - `\(\pm\)` 2\*sd (0.067) -&gt; -0.03 : 0.24
-    
----
-class: inverse
-
-# More: Mixed vs. Many
-
-
-
-
-
-
-
-*Regularization, shrinkage, partial-pooling*
-
-&lt;img src="img/pooling1.png" style="display:block; margin: 0 auto; width: 200%;"&gt;
-
----
-class: img-slide
-
-
-
-&lt;img src="part-2_files/figure-html/unnamed-chunk-8-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
-
----
-class: img-slide
-
-&lt;img src="part-2_files/figure-html/unnamed-chunk-9-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
+# Bonus!
 
 
 ---
 class: inverse
 
-# Summary of Random Slopes
+# Other Distributions
+
+glmmTMB, mgcv, brms etc. all allow for more distributions
+- student t
+- negative binomial
+- beta
+- multinomial
+- zero-inflated
+
+...and more!
+
+---
+class: inverse slide-font-75
+
+# Other Contexts
+
+- Spatial models
+- Survival models
+- Item response theory
+- Multi-membership 
+- Phylogenetic models
+- Adjacency structures
+- Gaussian processes
+- Surveys &amp; Mr. P
+- Survival/frailty
+- Meta-analysis
+- Post-hoc comparisons and multiple testing 
+- Growth mixture models
+- Nonlinear Mixed Effects Models
+
+---
+class: inverse
+
+# Bayesian Models
+
+.pull-left[
+rstanarm and brm
+
+Both use Stan
+
+Use lme4 syntax
+
+Extend well beyond 
+]
+
+.pull-right[
+&lt;img src="img/stan_logo.png" style="display:block; margin: 0 auto; width: 100%"&gt;
+]
 
 
-*Richly Parameterized Linear Models*
+---
+class: inverse
 
-Relative to a standard regression we get...
-- Extra variance parameters
-    - Adds to our understanding of the sources of uncertainty in the model
-- We can get the subjects specific effects
-  - And their correlation
-- We can use that information to get better predictions. 
+# Connections
 
---
 
-What’s not to like? 😄
+More generally we can think of STARs
+
+- *St*ructure
+- *A*dditive
+- *R*egression
+
+Can include any type of random effect:
+- standard cluster
+- spatial
+- additive
+- more!
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

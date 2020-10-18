@@ -1,0 +1,196 @@
+---
+title: "<span class='title'>Mixed Models</span>"
+subtitle: "<span class='subtitle'>Bonus<br>😄</span>"
+author: "<span class='author'>Michael Clark</span>"
+institute: "<span class='institute'>m-clark.github.io <br> @statsdatasci <br> CSCAR, UM</span>"
+date: "<span class='date'>2020-10-21</span>"
+css: style.css
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: zenburn
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: inverse
+
+background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, crayon.enabled = FALSE) # see https://github.com/hadley/mastering-shiny/issues/132
+
+knitr::opts_chunk$set(
+  # code
+  echo      = T,
+  eval      = T,
+  message   = F,
+  warning   = F,
+  error     = F,
+  comment   = NA,
+  R.options = list(width = 220),
+  # viz
+  dev.args  = list(bg = 'transparent'),
+  dev       = 'svglite',
+  fig.align = 'center',
+  out.width = '75%',
+  fig.asp   = .75,
+  # cache
+  cache.rebuild = F,
+  cache         = F
+)
+
+kable_df = function(data, digits=3, ...) {
+  kableExtra::kable(
+    data,
+    digits = digits,
+    format = 'html',
+    booktabs = T,
+    # longtable = F,
+    linesep = "",
+    ...,
+  ) %>% 
+    kableExtra::kable_styling(full_width = F)
+}
+
+perc = function(x, digits = 1) paste(rnd(x*100, digits = digits), '%')
+```
+
+```{r setup-extra, echo=FALSE, eval=TRUE}
+xaringanExtra::use_xaringan_extra(
+  c(
+    "tile_view",
+    "animate_css",
+    "tachyons",
+    'clipboard',
+    'fit_screen',
+    'webcam',
+    'panelset'
+  )
+)
+
+xaringanExtra::use_logo(
+  image_url = 'https://raw.githubusercontent.com/m-clark/m-clark.github.io/master/img/mc_logo.png',
+  link_url = 'https://m-clark.github.io',
+  width = '5%',
+  position =  xaringanExtra::css_position(bottom = "-3em", left = "1em"),
+  exclude_class = c("title-slide")
+)
+
+xaringanExtra::use_animate_css()
+
+xaringanExtra::style_share_again(
+  share_buttons = c("twitter", "linkedin", "pocket")
+)
+```
+
+
+
+```{r setup-packs, include = F, eval=TRUE}
+library(tidyverse)
+library(plotly)
+library(visibly)
+library(scico)
+library(mixedup)
+library(lme4)
+
+load('../data/gpa.RData')
+load('../data/pupils.RData')
+load('../data/nurses.RData')
+load('../data/speed_dating.RData')
+load('../data/sociometric.RData')
+# load('data/gpa')
+```
+
+---
+class: inverse middle center
+
+
+
+### *Overview of Random Effects*
+
+### *More Random Effects*
+
+### *Common Extensions*
+
+### *Issues*
+
+### **Bonus!**
+
+
+---
+class: inverse middle center animated fadeIn fadeOut # https://animate.style/ 
+
+# Bonus!
+
+
+---
+class: inverse
+
+# Other Distributions
+
+glmmTMB, mgcv, brms etc. all allow for more distributions
+- student t
+- negative binomial
+- beta
+- multinomial
+- zero-inflated
+
+...and more!
+
+---
+class: inverse slide-font-75
+
+# Other Contexts
+
+- Spatial models
+- Survival models
+- Item response theory
+- Multi-membership 
+- Phylogenetic models
+- Adjacency structures
+- Gaussian processes
+- Surveys & Mr. P
+- Survival/frailty
+- Meta-analysis
+- Post-hoc comparisons and multiple testing 
+- Growth mixture models
+- Nonlinear Mixed Effects Models
+
+---
+class: inverse
+
+# Bayesian Models
+
+.pull-left[
+rstanarm and brm
+
+Both use Stan
+
+Use lme4 syntax
+
+Extend well beyond 
+]
+
+.pull-right[
+<img src="img/stan_logo.png" style="display:block; margin: 0 auto; width: 100%">
+]
+
+
+---
+class: inverse
+
+# Connections
+
+
+More generally we can think of STARs
+
+- *St*ructure
+- *A*dditive
+- *R*egression
+
+Can include any type of random effect:
+- standard cluster
+- spatial
+- additive
+- more!

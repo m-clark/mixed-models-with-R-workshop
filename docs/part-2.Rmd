@@ -1,6 +1,6 @@
 ---
 title: "<span class='title'>Mixed Models</span>"
-subtitle: "<span class='subtitle'>with R!</span>"
+subtitle: "<span class='subtitle'>Random Slopes</span>"
 author: "<span class='author'>Michael Clark</span>"
 institute: "<span class='institute'>m-clark.github.io <br> @statsdatasci <br> CSCAR, UM</span>"
 date: "<span class='date'>2020-10-21</span>"
@@ -154,11 +154,8 @@ gpa_mixed =  lmer(gpa ~ occasion + (1 + occasion | student), data = gpa)
 Examine the fixed effects: 
 
 ```{r }
+# lme4::fixef(gpa_mixed)
 extract_fixed_effects(gpa_mixed)
-```
-
-
-```{r }
 ```
 
 ---
@@ -169,6 +166,7 @@ class: inverse
 Examine the variance components:
 
 ```{r}
+# lme4::VarCorr(gpa_mixed)
 extract_vc(gpa_mixed, show_cor = TRUE, ci_level = FALSE)
 ```
 
@@ -208,14 +206,18 @@ class: inverse
 
 # More: Mixed vs. Many
 
-```{r eval=FALSE, echo=FALSE}
+
+```{r eval=T, echo=FALSE}
 gpa_lm_by_group = gpa %>%
   split(.$student) %>%
   map_df( ~ data.frame(t(coef(
     lm(gpa ~ occasion, data = .x)
   )))) %>%
   rename(Intercept = X.Intercept.)
+```
 
+
+```{r eval=FALSE, echo=FALSE}
 gint = data_frame(
   Mixed = extract_random_coefs(gpa_mixed) %>% filter(effect == 'Intercept') %>% pull(value),
   Separate = gpa_lm_by_group %>% pull(Intercept)
@@ -374,3 +376,36 @@ Relative to a standard regression we get...
 --
 
 What’s not to like? 😄
+
+
+
+---
+class: inverse 
+
+# Exercises
+
+#### Sleep revisited
+
+Run the sleep study model with random coefficient for the Days effect, and interpret the results.  What is the correlation between the intercept and Days random effects?  Use the <span class="func">ranef</span> and <span class="func">coef</span> functions on the model you've created to inspect the individual specific effects. What do you see?
+
+```{r sleepstudy2}
+library(lme4)
+data("sleepstudy")
+```
+
+---
+class: inverse 
+
+# Exercises
+
+#### Sleep revisited
+
+In the following, replace <span class="objclass">model</span> with the name of your model object. Run each line, inspecting the result of each as you go along. 
+
+```{r ex-sleep, eval=FALSE}
+re = ranef(model)$Subject
+fe = fixef(model)
+apply(re, 1, function(x) x + fe) %>% t
+```
+
+The above code adds the fixed effects to each row of the random effects (the <span class="func">t</span> just transposes the result). What is the result compared to what you saw before?

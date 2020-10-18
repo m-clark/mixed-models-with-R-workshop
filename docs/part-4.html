@@ -28,7 +28,7 @@
 class: center, middle, inverse, title-slide
 
 # <span class="title">Mixed Models</span>
-## <span class="subtitle">Random Slopes</span>
+## <span class="subtitle">Issues</span>
 ### <span class="author">Michael Clark</span>
 ### <span class="institute">m-clark.github.io <br> <span class="citation">@statsdatasci</span> <br> CSCAR, UM</span>
 ### <span class="date">2020-10-21</span>
@@ -85,7 +85,6 @@ bottom:-3em;left:1em;
 
 
 
-
 ---
 class: inverse middle center
 
@@ -93,168 +92,179 @@ class: inverse middle center
 
 ### *Overview of Random Effects*
 
-### &lt;span class="" style = ""&gt;**More Random Effects**&lt;/span&gt;
+### *More Random Effects*
 
 ### *Common Extensions*
 
-### *Issues*
+### **Issues**
 
-### *Bayesian Approaches*
+
+---
+class: inverse middle center animated fadeIn fadeOut # https://animate.style/ 
+
+# More things to consider
+
+---
+class: inverse 
+
+# Variance Accounted For
+
+R^2^ has limited utility beyond OLS
+
+In the mixed case...
+
+... do you include the random effect or not?
+
+
+```r
+performance::r2(gpa_mixed)
+```
+
+```
+# R2 for Mixed Models
+
+  Conditional R2: 0.625
+     Marginal R2: 0.213
+```
+
+The difference can be quite dramatic!
+
+
+---
+class: inverse 
+
+# Alternative Model Approaches
+
+
+
+Fixed effects models
+- Econometrics
+
+Using cluster-robust standard errors
+
+Generalized estimating equations (GEE)
+- GLS, cluster-robust standard errors are a special case
+
+Latent Growth Curve Models
+- Identical to GLMM if set up appropriately
+
+---
+class: inverse 
+
+# Sample Sizes
+
+
+Small number of clusters
+- variance estimates may not be good
+
+Small number of observations within clusters
+- Mixed models are fine with pre-post data!
+
+Balanced/Missing values
+- Balance not required
+- Assumption is *missing at random*
+
+
+---
+class: inverse
+
+# Sample Sizes
+
+
+*Big data*
+
+- lme4 can be very fast 
+  - with single random effect and millions of observations
+- glmmTMB is slower but often won't have convergence issues
+- mgcv faster with millions if fewer clusters 
 
 
 
 ---
 class: img-slide
 
-&lt;img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%"&gt;
+# Sample Sizes
+
+&lt;img src="img/lme-timings-1.svg" style="display:block; margin: 0 auto;"&gt;
+
+
+
 
 ---
 class: inverse 
 
-# More: Application
+# Model Comparison
 
-So far we've assumed a constant trend over semester for each student.
+ANOVA/Likelihood Ratio
 
---
+Compare models with different fixed effects:
+- change the default estimation from REML to ML
+- models must have the same random effects structure
 
-&lt;br&gt;
-
-Should we?
+Compare models with different random effects:
+- keep default REML
+- models must have the same fixed effects
 
 ---
-class: inverse
+class: inverse 
 
-Let's add random slopes to the mix!
+# Model Comparison
 
-
-
-
+AIC is probably okay, but can use AICc or CAIC
 
 
 ```r
-gpa_mixed =  lmer(gpa ~ occasion + (1 + occasion | student), data = gpa)
+AIC(standard_lme4_model)
+AICcmodavg::AICc(standard_lme4_model)
+cAIC4::cAIC(standard_lme4_model)
 ```
 
-Examine the fixed effects: 
-
-
-```r
-# lme4::fixef(gpa_mixed)
-extract_fixed_effects(gpa_mixed)
-```
-
-```
-# A tibble: 2 x 7
-  term      value    se     t p_value lower_2.5 upper_97.5
-  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-1 Intercept 2.60  0.018 142.        0     2.56       2.64 
-2 occasion  0.106 0.006  18.1       0     0.095      0.118
-```
-
----
-class: inverse 
-
-# More: Application
-
-Examine the variance components:
-
-
-```r
-# lme4::VarCorr(gpa_mixed)
-extract_vc(gpa_mixed, show_cor = TRUE, ci_level = FALSE)
-```
-
-```
-$`Variance Components`
-     group    effect variance    sd var_prop
-1  student Intercept    0.045 0.213    0.491
-2  student  occasion    0.005 0.067    0.049
-3 Residual              0.042 0.206    0.460
-
-$Cor
-$Cor$student
-          Intercept occasion
-Intercept     1.000   -0.098
-occasion     -0.098    1.000
-```
-
-What is our interpretation? &lt;span class="" style = "font-size: 200%"&gt;🤔&lt;/span&gt;
 
 
 ---
 class: inverse 
 
-# More: Application
+# Convergence
 
-The intercept variance tells us...
+Data is as data does. 
 
---
+You will eventually have issues:
+- such as lack of convergence
+- estimates of zero variance
+- other warnings 
 
-how much that starting GPA bounces around from student to student.
-- Occasion starts at zero
+These are not easy models to estimate, so don't be surprised if all doesn't go smoothly.
 
 ---
 class: inverse 
 
-# More: Application
+# Convergence
 
-The slope variance/sd tells us...
+Common sources of problems:
+
+- Unscaled variables
+- Other data problems (e.g. severe imbalance)
+- Few clusters to estimate variances
+
+Common solutions:
+
+- Standardize, center, log numeric
+- Consider simpler model
+- Use different optimizer, more iterations
+
+
+---
+class: inverse 
+
+# Summary
+
+Mixed models will take more effort...
 
 --
 
-how much that starting GPA bounces around from student to student.
-- Is it large?
-    - Different scale than intercept
-    - Compare to the actual value 0.11
-    - Given a normal distribution, we could expect most students to fall somewhere between a flat effect of zero to more than double the population average
-    - `\(\pm\)` 2\*sd (0.067) -&gt; -0.03 : 0.24
-    
----
-class: inverse
+...because they're interesting!
 
-# More: Mixed vs. Many
-
-
-
-
-
-
-
-*Regularization, shrinkage, partial-pooling*
-
-&lt;img src="img/pooling1.png" style="display:block; margin: 0 auto; width: 200%;"&gt;
-
----
-class: img-slide
-
-
-
-&lt;img src="part-2_files/figure-html/unnamed-chunk-8-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
-
----
-class: img-slide
-
-&lt;img src="part-2_files/figure-html/unnamed-chunk-9-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
-
-
----
-class: inverse
-
-# Summary of Random Slopes
-
-
-*Richly Parameterized Linear Models*
-
-Relative to a standard regression we get...
-- Extra variance parameters
-    - Adds to our understanding of the sources of uncertainty in the model
-- We can get the subjects specific effects
-  - And their correlation
-- We can use that information to get better predictions. 
-
---
-
-What’s not to like? 😄
+That shouldn't keep you from exploring!
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
