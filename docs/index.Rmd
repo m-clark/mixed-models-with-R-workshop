@@ -691,4 +691,10 @@ summary(gpa_mixed_cluster_level)
 What happened to the student variance after adding cluster level covariates to the model?
 
 
+---
+class: inverse middle center
 
+# Moving on...
+
+
+# [Part 2](https://m-clark.github.io/mixed-models-with-R-workshop/part-2.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 3](https://m-clark.github.io/mixed-models-with-R-workshop/part-3.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 4](https://m-clark.github.io/mixed-models-with-R-workshop/part-4.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 5](https://m-clark.github.io/mixed-models-with-R-workshop/part-5.html)

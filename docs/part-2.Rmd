@@ -13,9 +13,8 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-class: inverse
+class: inverse middle center
 
-background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE, crayon.enabled = FALSE) # see https://github.com/hadley/mastering-shiny/issues/132
@@ -96,11 +95,9 @@ library(lme4)
 
 load('../data/gpa.RData')
 # load('data/gpa')
+
+gpa_lm = lm(gpa ~ occasion, data = gpa)
 ```
-
-
----
-class: inverse middle center
 
 
 
@@ -194,10 +191,10 @@ The slope variance/sd tells us...
 
 --
 
-... how much that starting GPA bounces around from student to student.
+... how much that trend bounces around from student to student.
 - Is it large?
     - Different scale than intercept
-    - Compare to the actual value `r round(fixef(gpa_mixed)[2], 2)`
+    - Compare to the average value: `r round(fixef(gpa_mixed)[2], 2)`
     - Given a normal distribution, we could expect most students to fall somewhere between a flat effect of zero to more than double the population average
     - $\pm$ 2\*sd (`r extract_vc(gpa_mixed, ci_level= 0)$sd[2]`) -> `r round(fixef(gpa_mixed)[2] -extract_vc(gpa_mixed, ci_level= 0)$sd[2]*2, 2)` : `r round(fixef(gpa_mixed)[2] +extract_vc(gpa_mixed, ci_level= 0)$sd[2]*2, 2)`
     
@@ -268,7 +265,16 @@ ggsave('docs/img/pooling1.png', width = 6, height = 4)
 
 *Regularization, shrinkage, partial-pooling*
 
-<img src="img/pooling1.png" style="display:block; margin: 0 auto; width: 200%;">
+<img src="img/shrinkage_main.svg" style="display:block; margin: 0 auto; width: 200%;">
+
+
+---
+class: img-slide
+
+# More: Mixed vs. Many
+
+<img src="img/shrinkage_all.svg" style="display:block; margin: 0 auto; width: 150%;">
+
 
 ---
 class: img-slide
@@ -412,7 +418,17 @@ In the following, replace <span class="objclass">model</span> with the name of y
 ```{r ex-sleep, eval=FALSE}
 re = ranef(model)$Subject
 fe = fixef(model)
+
 apply(re, 1, function(x) x + fe) %>% t
 ```
 
 The above code adds the fixed effects to each row of the random effects (the <span class="func">t</span> just transposes the result). What is the result compared to what you saw before?
+
+
+---
+class: inverse middle center
+
+# Moving on...
+
+
+# [Part 1](https://m-clark.github.io/mixed-models-with-R-workshop/part-1.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 3](https://m-clark.github.io/mixed-models-with-R-workshop/part-3.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 4](https://m-clark.github.io/mixed-models-with-R-workshop/part-4.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 5](https://m-clark.github.io/mixed-models-with-R-workshop/part-5.html)

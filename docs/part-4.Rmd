@@ -13,9 +13,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-class: inverse
-
-background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
+class: inverse middle center
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE, crayon.enabled = FALSE) # see https://github.com/hadley/mastering-shiny/issues/132
@@ -102,8 +100,7 @@ load('../data/sociometric.RData')
 # load('data/gpa')
 ```
 
----
-class: inverse middle center
+
 
 
 
@@ -126,7 +123,7 @@ class: inverse
 
 # Variance Accounted For
 
-R^2^ has limited utility beyond OLS
+$R^2$ has limited utility beyond OLS
 
 In the mixed case...
 
@@ -183,8 +180,9 @@ class: inverse
 *Big data*
 
 - lme4 can be very fast 
-  - with single random effect and millions of observations
-- glmmTMB is slower but often won't have convergence issues
+  - even with single random effect and millions of observations
+- glmmTMB is slower
+    - but often won't have convergence issues
 - mgcv faster with millions if fewer clusters 
 
 
@@ -273,3 +271,11 @@ Mixed models will take more effort...
 ...because they're interesting!
 
 That shouldn't keep you from exploring!
+
+---
+class: inverse middle center
+
+# Moving on...
+
+
+# [Part 1](https://m-clark.github.io/mixed-models-with-R-workshop/part-1.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 2](https://m-clark.github.io/mixed-models-with-R-workshop/part-2.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 3](https://m-clark.github.io/mixed-models-with-R-workshop/part-3.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 5](https://m-clark.github.io/mixed-models-with-R-workshop/part-5.html)

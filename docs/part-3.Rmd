@@ -13,9 +13,8 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-class: inverse
+class: inverse middle center
 
-background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE, crayon.enabled = FALSE) # see https://github.com/hadley/mastering-shiny/issues/132
@@ -102,8 +101,8 @@ load('../data/sociometric.RData')
 # load('data/gpa')
 ```
 
----
-class: inverse middle center
+
+
 
 
 
@@ -152,13 +151,14 @@ class: inverse
 
 Sometimes we have clusters nested within other clusters
   
-- Which may be nested within still other clusters.
+- Possibly nested within still other clusters.
   
 Example:
   
   - Repeated observations of people
   - Observations nested within person
-  - People nested within geographic unit
+  - People nested within county
+  - County within state
 
 ---
 class: middle img-slide
@@ -233,6 +233,9 @@ extract_vc(pupils_crossed, ci_level = FALSE)
 
 What is our interpretation? <span class="" style = "font-size: 200%">🤔</span>
 
+- Think about the range of achievement scores
+    - range: `r range(pupils$achievement)`  
+    - sd: `r round(sd(pupils$achievement), 2)`
 
 ---
 class: middle img-slide
@@ -286,7 +289,7 @@ nurses_hierarchical = lmer(
 ```{r eval=F}
 nurses_hierarchical = lmer(
   stress ~ age  + sex + experience + treatment + wardtype + hospsize
-  + (1|hospital/ward),
+  + (1 | hospital/ward),
   data = nurses
 )
 ```
@@ -319,7 +322,10 @@ extract_vc(nurses_hierarchical, ci_level = FALSE)
 
 What is our interpretation? <span class="" style = "font-size: 200%">🤔</span>
 
-
+- Think about the range of stress scores
+    - range: `r range(nurses$stress)`  
+    - sd: `r round(sd(nurses$stress), 2)`
+    
 ---
 class: middle img-slide
 
@@ -519,7 +525,7 @@ $$\Sigma_\sigma =
 \sigma_{31}   & \sigma_{32}   & \sigma^2 \\
 \end{array}\right]$$
 
-As Correlation structure:
+As correlation structure:
 
 $$\Sigma_\rho = \sigma^2
 \left[
@@ -644,6 +650,31 @@ class: inverse
 ```{r}
 summary(corr_res_tmb)
 ```
+
+---
+class: inverse
+
+# Autocorrelation
+
+What is our interpretation? <span class="" style = "font-size: 200%">🤔</span>
+
+The estimated AR correlation is `r extract_cor_structure(corr_res_tmb, which_cor = 'ar1')$student`.
+
+So within a person, the AR orrelation structure is something like this:
+
+<span class="" style = "font-size:90%">
+$$\Sigma_{ar} = \sigma^2_{ar}
+\left[
+\begin{array}{cccc} 
+1   &   . &   . &   . &   . & . \\
+.84 &   1 &   . &   . &   . & . \\
+.71 & .84 &   1 &   . &   . & . \\
+.60 & .71 & .84 &   1 &   . & . \\
+.51 & .60 & .71 & .84 &   1 & . \\
+.43 & .51 & .60 & .71 & .84 & 1 \\
+\end{array}\right]$$
+</span>
+
 
 
 ---
@@ -771,3 +802,10 @@ c(AIC(model1), AIC(model2), AIC(model3), AIC(model4))
 ```
 
 
+---
+class: inverse middle center
+
+# Moving on...
+
+
+# [Part 1](https://m-clark.github.io/mixed-models-with-R-workshop/part-1.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 2](https://m-clark.github.io/mixed-models-with-R-workshop/part-2.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 4](https://m-clark.github.io/mixed-models-with-R-workshop/part-4.html)  <span class="" style = "width: 50px; display: inline-block"></span>[Part 5](https://m-clark.github.io/mixed-models-with-R-workshop/part-5.html)

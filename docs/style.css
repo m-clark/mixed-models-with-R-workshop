@@ -220,3 +220,7 @@ div .datatables {
   background-color: #3f3f3f; /* zenburn*/
 }
 
+.code-only pre, .code-only code {
+  color: #d6d6d6;
+}
+

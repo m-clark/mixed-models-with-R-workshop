@@ -35,9 +35,8 @@ class: center, middle, inverse, title-slide
 
 ---
 
-class: inverse
+class: inverse middle center
 
-background-image: url(https://github.com/m-clark/m-clark.github.io/raw/master/img/Rlogo.svg)
 
 
 
@@ -84,10 +83,6 @@ bottom:-3em;left:1em;
 
 
 
-
-
----
-class: inverse middle center
 
 
 
@@ -202,10 +197,10 @@ The slope variance/sd tells us...
 
 --
 
-... how much that starting GPA bounces around from student to student.
+... how much that trend bounces around from student to student.
 - Is it large?
     - Different scale than intercept
-    - Compare to the actual value 0.11
+    - Compare to the average value: 0.11
     - Given a normal distribution, we could expect most students to fall somewhere between a flat effect of zero to more than double the population average
     - `\(\pm\)` 2\*sd (0.067) -&gt; -0.03 : 0.24
     
@@ -222,7 +217,16 @@ class: inverse
 
 *Regularization, shrinkage, partial-pooling*
 
-&lt;img src="img/pooling1.png" style="display:block; margin: 0 auto; width: 200%;"&gt;
+&lt;img src="img/shrinkage_main.svg" style="display:block; margin: 0 auto; width: 200%;"&gt;
+
+
+---
+class: img-slide
+
+# More: Mixed vs. Many
+
+&lt;img src="img/shrinkage_all.svg" style="display:block; margin: 0 auto; width: 150%;"&gt;
+
 
 ---
 class: img-slide
@@ -293,10 +297,20 @@ In the following, replace &lt;span class="objclass"&gt;model&lt;/span&gt; with t
 ```r
 re = ranef(model)$Subject
 fe = fixef(model)
+
 apply(re, 1, function(x) x + fe) %&gt;% t
 ```
 
 The above code adds the fixed effects to each row of the random effects (the &lt;span class="func"&gt;t&lt;/span&gt; just transposes the result). What is the result compared to what you saw before?
+
+
+---
+class: inverse middle center
+
+# Moving on...
+
+
+# [Part 1](https://m-clark.github.io/mixed-models-with-R-workshop/part-1.html)  &lt;span class="" style = "width: 50px; display: inline-block"&gt;&lt;/span&gt;[Part 3](https://m-clark.github.io/mixed-models-with-R-workshop/part-3.html)  &lt;span class="" style = "width: 50px; display: inline-block"&gt;&lt;/span&gt;[Part 4](https://m-clark.github.io/mixed-models-with-R-workshop/part-4.html)  &lt;span class="" style = "width: 50px; display: inline-block"&gt;&lt;/span&gt;[Part 5](https://m-clark.github.io/mixed-models-with-R-workshop/part-5.html)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
