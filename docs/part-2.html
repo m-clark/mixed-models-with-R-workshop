@@ -101,7 +101,7 @@ bottom:-3em;left:1em;
 ---
 class: img-slide-from-doc
 
-&lt;img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:125%;"&gt;
+&lt;img src="img/gpa_anim.gif" style="display:block; margin: 0 auto; width:95%;"&gt;
 
 ---
 class: inverse 
@@ -134,7 +134,7 @@ Examine the fixed effects:
 
 
 ```r
-# lme4::fixef(gpa_mixed)
+# fixef(gpa_mixed)
 extract_fixed_effects(gpa_mixed)
 ```
 
@@ -155,7 +155,7 @@ Examine the variance components:
 
 
 ```r
-# lme4::VarCorr(gpa_mixed)
+# VarCorr(gpa_mixed)
 extract_vc(gpa_mixed, show_cor = TRUE, ci_level = FALSE)
 ```
 
@@ -188,6 +188,7 @@ The intercept variance tells us...
 ... how much that starting GPA bounces around from student to student.
 - Occasion starts at zero
 
+
 ---
 class: inverse slide-font-75
 
@@ -203,7 +204,22 @@ The slope variance/sd tells us...
     - Compare to the average value: 0.11
     - Given a normal distribution, we could expect most students to fall somewhere between a flat effect of zero to more than double the population average
     - `\(\pm\)` 2\*sd (0.067) -&gt; -0.03 : 0.24
-    
+
+
+---
+class: inverse
+
+# More: Application
+
+The correlation tells us...
+
+--
+
+... how much that trend is related to the intercept.
+
+Starting our time indicator at 0, it is the correlation of the trend to the starting point.
+
+
 ---
 class: inverse
 
@@ -265,7 +281,7 @@ Relative to a standard regression we get...
 
 --
 
-What’s not to like? 😄
+What's not to like? 😄
 
 
 
