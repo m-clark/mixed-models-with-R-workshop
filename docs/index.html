@@ -158,20 +158,31 @@ Misc
 ]
 
 ---
-class: inverse
+class: inverse slide-font-66
 
 # Getting Started: A starting point
 
+
+
+
 Run the following models and summarize.
-- Use &lt;span class="func" style = ""&gt;summary&lt;/span&gt; on the models.
-- &lt;span class="objclass" style = ""&gt;`sleepstudy`&lt;/span&gt; is in the &lt;span class="pack" style = ""&gt;lme4&lt;/span&gt; package.
+- &lt;span class="objclass" style = ""&gt;`gapminder_recent_g20`&lt;/span&gt; 
+    - country level data across time (GDP, life expectancy, etc.)
+    - limited to &gt; 1950 and countries in the g20
+- Run and use &lt;span class="func" style = ""&gt;summary&lt;/span&gt; on the models.
+
+
+```r
+load('data/gapminder_recent_g20.RData')
+```
+
 
 
 ```r
 library(lme4)
 
-mod_lm = lm(Reaction ~ Days, data = sleepstudy)
-mod_lmer = lmer(Reaction ~ Days + (1|Subject), data = sleepstudy)
+mod_lm   =  lm(lifeExp ~ year0, data = gapminder_recent_g20)
+mod_lmer = lme4::lmer(lifeExp ~ year0 + (1|country), data = gapminder_recent_g20)
 ```
 
 What's the same?
@@ -183,15 +194,22 @@ class: img-slide
 
 &lt;!-- # Getting Started: A starting point --&gt;
 
-&lt;img src="index_files/figure-html/unnamed-chunk-3-1.svg" width="125%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.svg" width="125%" style="display: block; margin: auto;" /&gt;
+
+---
+class: img-slide
+
+&lt;!-- # Getting Started: A starting point --&gt;
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.svg" width="125%" style="display: block; margin: auto;" /&gt;
 
 
 ---
-class: inverse
+class: inverse slide-font-66
 
 # Getting Started: Terminology
 
-All describe types of what we'd generally call:
+The following describe what we'd generally call:
 
 *&lt;div class="center"&gt;mixed models&lt;/div&gt;*
 
@@ -241,7 +259,7 @@ class: inverse
 Data Description
 
 
-&gt;&lt;span class="" style = "font-size: 75%"&gt;For the following we'll assess factors predicting college grade point average (GPA).  Each of the 200 students is assessed for six occasions (each semester for the first three years), so we have observations clustered within students. We have other variables such as job status, sex, and high school GPA.  Some will be in both labeled and numeric form.&lt;/span&gt;
+&gt;&lt;span class="" style = "font-size: 75%"&gt;We'll assess factors predicting college grade point average (GPA).  200 students are assessed for six occasions (each semester for the first three years), so we have observations clustered within students. We have other variables such as job status, sex, and high school GPA.  Some will be in both labeled and numeric form.&lt;/span&gt;
 
 
 ```r
@@ -270,7 +288,9 @@ class: inverse
 
 # Getting Started: Standard Regression
 
-Scary formulas! 👻
+&lt;div style = "text-align: center;"&gt;Scary formulas! 
+&lt;br&gt;&lt;br&gt;
+&lt;span style = "font-size: 200%; "&gt;👻&lt;/span&gt;&lt;/div&gt;
 
 `$$\mathscr{gpa} = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} + \epsilon$$`
 
@@ -350,7 +370,7 @@ class: img-slide
 
 Think that standard model is adequate?
 
-&lt;img src="index_files/figure-html/unnamed-chunk-7-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -358,7 +378,7 @@ class: inverse
 
 # Getting Started: Mixed Model
 
-Add a student effect:
+Add a (random) student effect:
 
 `$$\mathscr{gpa} = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} + (\mathrm{effect}_{\mathscr{student}} + \epsilon)$$`
 
@@ -423,34 +443,34 @@ Add a student effect!
 ```r
 gpa_mixed = lmer(gpa ~ occasion + (1 | student), data = gpa)
 
-summary(gpa_mixed)
+# summary(gpa_mixed, cor = FALSE) # dont' want FE correlations
+mixedup::summarize_model(gpa_mixed, digits = 3)
 ```
 
 ```
-Linear mixed model fit by REML ['lmerMod']
-Formula: gpa ~ occasion + (1 | student)
-   Data: gpa
+Computing profile confidence intervals ...
+```
 
-REML criterion at convergence: 408.9
+```
 
-Scaled residuals: 
-    Min      1Q  Median      3Q     Max 
--3.6169 -0.6373 -0.0004  0.6361  2.8310 
+Variance Components:
+```
 
-Random effects:
- Groups   Name        Variance Std.Dev.
- student  (Intercept) 0.06372  0.2524  
- Residual             0.05809  0.2410  
-Number of obs: 1200, groups:  student, 200
+```
+    Group    Effect Variance    SD SD_2.5 SD_97.5 Var_prop
+  student Intercept    0.064 0.252  0.225   0.282    0.523
+ Residual              0.058 0.241  0.231   0.252    0.477
+```
 
-Fixed effects:
-            Estimate Std. Error t value
-(Intercept) 2.599214   0.021696   119.8
-occasion    0.106314   0.004074    26.1
+```
 
-Correlation of Fixed Effects:
-         (Intr)
-occasion -0.469
+Fixed Effects:
+```
+
+```
+      Term Value    SE       t P_value Lower_2.5 Upper_97.5
+ Intercept 2.599 0.022 119.800   0.000     2.557      2.642
+  occasion 0.106 0.004  26.096   0.000     0.098      0.114
 ```
 
 ---
@@ -463,7 +483,7 @@ Fixed effects:
 
 ```r
 # lme4::fixef(gpa_mixed)
-extract_fixed_effects(gpa_mixed)
+mixedup::extract_fixed_effects(gpa_mixed)
 ```
 
 ```
@@ -487,7 +507,7 @@ Variance components:
 
 ```r
 # lme4::VarCorr(gpa_mixed)
-extract_vc(gpa_mixed)
+mixedup::extract_vc(gpa_mixed)
 ```
 
 ```
@@ -532,8 +552,8 @@ These are the random effects for students:
 
 
 ```r
-# ranef(gpa_mixed)
-extract_random_effects(gpa_mixed)
+# lme4::ranef(gpa_mixed)
+mixedup::extract_random_effects(gpa_mixed)
 ```
 
 ```
@@ -565,7 +585,7 @@ These are the random coefficients:
 
 ```r
 # coef(gpa_mixed)
-extract_random_coefs(gpa_mixed)
+mixedup::extract_random_coefs(gpa_mixed)
 ```
 
 ```
@@ -594,7 +614,7 @@ Prediction can include random effects or not.
 
 If they do not, essentially the same as `lm`.
 
-But the random effects will produce better predictions.
+But the random effects will help produce better predictions. 😃
 
 
 ```r
@@ -800,14 +820,14 @@ class: img-slide
 &lt;/table&gt;
 
 ---
-class: img-slide 
+class: img-slide slide-font-75
 
 # Getting Started: Application
 
 Which do you think has the better fit? 
 - One line for all? Separate for each student?
 
-&lt;img src="index_files/figure-html/unnamed-chunk-16-1.svg" width="150%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-19-1.svg" width="80%" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse 
@@ -816,7 +836,7 @@ class: inverse
 
 Thus far we've had only one covariate:
 - Time indicator
-- Varies with outcome
+- Varies with outcome, at observation level
 
 We can have cluster-level covariates also
 - Just add as you would any other
@@ -875,8 +895,6 @@ class: inverse middle center
 
 # Moving on...
 
-
-class: center
 
 # [Part 2](https://m-clark.github.io/mixed-models-with-R-workshop/part-2.html)  &lt;span class="" style = "width: 50px; display: inline-block"&gt;&lt;/span&gt;[Part 3](https://m-clark.github.io/mixed-models-with-R-workshop/part-3.html)  &lt;span class="" style = "width: 50px; display: inline-block"&gt;&lt;/span&gt;[Part 4](https://m-clark.github.io/mixed-models-with-R-workshop/part-4.html)  &lt;span class="" style = "width: 50px; display: inline-block"&gt;&lt;/span&gt;[Part 5](https://m-clark.github.io/mixed-models-with-R-workshop/part-5.html)
     </textarea>

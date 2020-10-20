@@ -92,6 +92,8 @@ library(plotly)
 library(visibly)
 library(scico)
 library(mixedup)
+
+load('../data/gapminder_recent_g20.RData')
 ```
 
 
@@ -130,7 +132,7 @@ class: inverse smaller50
 .pull-left[
 Required for workshop:
 
-```{r}
+```{r eval=FALSE}
 install.packages('lme4')
 ```
 
@@ -164,19 +166,63 @@ Misc
 ]
 
 ---
-class: inverse
+class: inverse slide-font-66
 
 # Getting Started: A starting point
 
+```{r echo = F, eval=FALSE}
+data('gapminder_2019', package = 'noiris')
+gapminder_recent_g20 = gapminder_2019 %>% 
+  filter(
+    year >= 1950,
+    country %in% c(
+     'Australia',
+     'Canada',
+     'Saudi Arabia',
+     'United States',
+     'India',
+     'Russia',
+     'South Africa',
+     'Turkey',
+     'Argentina',
+     'Brazil',
+     'Mexico',
+     'France',
+     'Germany',
+     'Italy',
+     'Spain',
+     'United Kingdom',
+     'China',
+     'Indonesia',
+     'Japan',
+     'South Korea'
+    )
+  ) %>% 
+  mutate(
+    year0 = year - min(year),
+    decade0 = year0/10
+  )
+
+save(gapminder_recent_g20, file = 'data/gapminder_recent_g20.RData')
+```
+
+
 Run the following models and summarize.
-- Use <span class="func" style = "">summary</span> on the models.
-- <span class="objclass" style = "">`sleepstudy`</span> is in the <span class="pack" style = "">lme4</span> package.
+- <span class="objclass" style = "">`gapminder_recent_g20`</span> 
+    - country level data across time (GDP, life expectancy, etc.)
+    - limited to > 1950 and countries in the g20
+- Run and use <span class="func" style = "">summary</span> on the models.
+
+```{r eval=F}
+load('data/gapminder_recent_g20.RData')
+```
+
 
 ```{r eval=TRUE}
 library(lme4)
 
-mod_lm = lm(Reaction ~ Days, data = sleepstudy)
-mod_lmer = lmer(Reaction ~ Days + (1|Subject), data = sleepstudy)
+mod_lm   =  lm(lifeExp ~ year0, data = gapminder_recent_g20)
+mod_lmer = lme4::lmer(lifeExp ~ year0 + (1|country), data = gapminder_recent_g20)
 ```
 
 What's the same?
@@ -189,29 +235,51 @@ class: img-slide
 <!-- # Getting Started: A starting point -->
 
 ```{r eval=TRUE, echo=FALSE, out.width='125%'}
+
+
+ggplot(gapminder_recent_g20, aes(x = year, y = lifeExp)) +
+  geom_point(alpha = .1) +
+  geom_smooth(method = 'lm', color = '#542437FF', se = F) +
+  labs(subtitle = 'lm') +
+  theme_clean()
+```
+
+---
+class: img-slide
+
+<!-- # Getting Started: A starting point -->
+
+```{r eval=TRUE, echo=FALSE, out.width='125%'}
 library(brolgar)
 
-sleepstudy_ts = as_tsibble(sleepstudy, key = Subject, index = Days)
+gapminder_ts = as_tsibble(gapminder_recent_g20, key = country, index = year)
  
-sleepstudy_ts %>% 
-  ggplot(aes(x = Days, y = Reaction, color = Subject)) +
-  geom_line() +
-  geom_point() +
+gapminder_ts %>% 
+  arrange(continent) %>% 
+  mutate(country = fct_inorder(country)) %>% 
+  ggplot(aes(x = year, y = lifeExp, color = country)) +
+  # geom_line() +
+  geom_point(alpha = .1) +
   geom_smooth(aes(), method = 'lm', se = FALSE) +
-  facet_strata(n_strata = 18, nrow = 3, along = Subject) +
+  facet_wrap(~country, nrow = 5) +
   scale_color_scico_d() +
-  scale_x_continuous(breaks = c(0, 3, 6, 9)) +
-  guides(color = 'none') +
-  theme_clean()
+  scale_x_continuous(breaks = seq(1900, 2010, by = 10)) +
+  scale_y_continuous(breaks = seq(20, 80, by = 20)) +
+  guides(color = 'none', x = guide_axis(n.dodge =2)) +
+  labs(title = 'lmer') +
+  theme_clean() +
+  theme(
+    axis.text = element_text(size = 6)
+  )
 ```
 
 
 ---
-class: inverse
+class: inverse slide-font-66
 
 # Getting Started: Terminology
 
-All describe types of what we'd generally call:
+The following describe what we'd generally call:
 
 *<div class="center">mixed models</div>*
 
@@ -261,7 +329,7 @@ class: inverse
 Data Description
 
 
-><span class="" style = "font-size: 75%">For the following we'll assess factors predicting college grade point average (GPA).  Each of the 200 students is assessed for six occasions (each semester for the first three years), so we have observations clustered within students. We have other variables such as job status, sex, and high school GPA.  Some will be in both labeled and numeric form.</span>
+><span class="" style = "font-size: 75%">We'll assess factors predicting college grade point average (GPA).  200 students are assessed for six occasions (each semester for the first three years), so we have observations clustered within students. We have other variables such as job status, sex, and high school GPA.  Some will be in both labeled and numeric form.</span>
 
 ```{r}
 library(tidyverse)
@@ -286,7 +354,9 @@ class: inverse
 
 # Getting Started: Standard Regression
 
-Scary formulas! 👻
+<div style = "text-align: center;">Scary formulas! 
+<br><br>
+<span style = "font-size: 200%; ">👻</span></div>
 
 $$\mathscr{gpa} = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} + \epsilon$$
 
@@ -380,7 +450,7 @@ class: inverse
 
 # Getting Started: Mixed Model
 
-Add a student effect:
+Add a (random) student effect:
 
 $$\mathscr{gpa} = b_{\mathrm{intercept}} + b_{\mathrm{occ}}\cdot \mathscr{occasion} + (\mathrm{effect}_{\mathscr{student}} + \epsilon)$$
 
@@ -472,10 +542,11 @@ gpa_lm_by_group = gpa %>%
 coef_lm = coef(gpa_lm)
 ```
 
-```{r eval=TRUE}
+```{r eval=TRUE, message = T}
 gpa_mixed = lmer(gpa ~ occasion + (1 | student), data = gpa)
 
-summary(gpa_mixed)
+# summary(gpa_mixed, cor = FALSE) # dont' want FE correlations
+mixedup::summarize_model(gpa_mixed, digits = 3)
 ```
 
 ---
@@ -487,7 +558,7 @@ Fixed effects:
 
 ```{r eval=T}
 # lme4::fixef(gpa_mixed)
-extract_fixed_effects(gpa_mixed)
+mixedup::extract_fixed_effects(gpa_mixed)
 ```
 
 Just our standard regression coefficients!
@@ -502,7 +573,7 @@ Variance components:
 
 ```{r eval=T}
 # lme4::VarCorr(gpa_mixed)
-extract_vc(gpa_mixed)
+mixedup::extract_vc(gpa_mixed)
 ```
 
 These are the standard deviation/variance of the random effects.
@@ -537,8 +608,8 @@ class: inverse
 These are the random effects for students:
 
 ```{r eval=TRUE}
-# ranef(gpa_mixed)
-extract_random_effects(gpa_mixed)
+# lme4::ranef(gpa_mixed)
+mixedup::extract_random_effects(gpa_mixed)
 ```
 
 ---
@@ -552,7 +623,7 @@ These are the random coefficients:
 
 ```{r eval=TRUE}
 # coef(gpa_mixed)
-extract_random_coefs(gpa_mixed)
+mixedup::extract_random_coefs(gpa_mixed)
 ```
 
 ---
@@ -564,7 +635,7 @@ Prediction can include random effects or not.
 
 If they do not, essentially the same as `lm`.
 
-But the random effects will produce better predictions.
+But the random effects will help produce better predictions. 😃
 
 ```{r eval=T}
 predict_lm      = predict(gpa_lm)
@@ -588,14 +659,14 @@ tibble(
 ```
 
 ---
-class: img-slide 
+class: img-slide slide-font-75
 
 # Getting Started: Application
 
 Which do you think has the better fit? 
 - One line for all? Separate for each student?
 
-```{r echo=F, eval=T, out.width='150%'}
+```{r echo=F, eval=T, out.width='80%'}
 init = tibble(
   student = as.character(gpa$student),
   occasion = gpa$occasion,
@@ -636,7 +707,7 @@ class: inverse
 
 Thus far we've had only one covariate:
 - Time indicator
-- Varies with outcome
+- Varies with outcome, at observation level
 
 We can have cluster-level covariates also
 - Just add as you would any other
