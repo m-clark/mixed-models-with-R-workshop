@@ -10,7 +10,7 @@ For the workshop, run the following in your R session to get the notes and mater
 install.packages('usethis') # if you don't already have it
 
 usethis::use_course(
-  'https://github.com/m-clark/R-II-Programming/blob/master/workshop_programming.zip?raw=true', 
+  'https://github.com/m-clark/mixed-models-with-R-workshop/raw/main/mem_workshop.zip', 
   destdir = NULL
 )
 ```
