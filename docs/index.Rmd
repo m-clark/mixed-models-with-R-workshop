@@ -1,6 +1,6 @@
 ---
 title: "<span class='title'>Mixed Models</span>"
-subtitle: "<span class='subtitle'>with R!</span>"
+subtitle: "<span class='subtitle'>with *R*!</span>"
 author: "<span class='author'>Michael Clark</span>"
 institute: "<span class='institute'><br>m-clark.github.io <br> @statsdatasci <br> CSCAR, UM</span>"
 date: "<span class='date'>2020-10-21</span>"

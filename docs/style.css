@@ -140,6 +140,30 @@ div.center {
   bottom: 75px;
   display: inline-block;
 }
+
+.bonus-subtitle  {
+  font-size: 40pt;
+  bottom: 75px;
+  position: relative;
+  display: inline-block;
+    text-shadow: 0px 0px 0 #3f3f3f,
+                 1px 1px 0 #3f3f3f,
+                 2px 2px 0 #3f3f3f,
+                 3px 3px 0 #3f3f3f,
+                 4px 4px 0 #542437FF,
+                 5px 5px 0 #542437FF,
+                 6px 6px 0 #542437FF,
+                 7px 7px 0 #EBA42BFF,
+                 8px 8px 0 #EBA42BFF,
+                 9px 9px 0 #EBA42BFF,
+                 10px 10px  0 #EBA42BFF,
+                 11px 11px 10px #EBA42BFF,
+                 11px 11px 1px #EBA42BFF,
+                 0px 0px 10px #EBA42BFF;
+
+}
+
+
 .author {
   font-size: 28pt;
   font-family: 'Mrs Sheppards', Yellowtail, 'Mr Dafoe', Condiment, Roboto, Sans ;
