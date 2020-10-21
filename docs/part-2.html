@@ -30,7 +30,7 @@ class: center, middle, inverse, title-slide
 # <span class="title">Mixed Models</span>
 ## <span class="subtitle">Random Slopes</span>
 ### <span class="author">Michael Clark</span>
-### <span class="institute">m-clark.github.io <br> <span class="citation">@statsdatasci</span> <br> CSCAR, UM</span>
+### <span class="institute"><br>m-clark.github.io <br> <span class="citation">@statsdatasci</span> <br> CSCAR, UM</span>
 ### <span class="date">2020-10-21</span>
 
 ---
@@ -314,7 +314,7 @@ In the following, replace &lt;span class="objclass"&gt;model&lt;/span&gt; with t
 re = ranef(model)$Subject
 fe = fixef(model)
 
-apply(re, 1, function(x) x + fe) %&gt;% t
+apply(re, 1, function(x) x + fe) %&gt;% t()
 ```
 
 The above code adds the fixed effects to each row of the random effects (the &lt;span class="func"&gt;t&lt;/span&gt; just transposes the result). What is the result compared to what you saw before?

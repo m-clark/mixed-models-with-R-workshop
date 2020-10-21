@@ -31,7 +31,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .title-slide {
-  background-image: url(img/sunset-vector.jpg);
+  background-image: url(img/sunset_zoom.png);
   background-size: cover;
   vertical-align: middle;
 }
@@ -144,13 +144,15 @@ div.center {
   font-size: 28pt;
   font-family: 'Mrs Sheppards', Yellowtail, 'Mr Dafoe', Condiment, Roboto, Sans ;
   position: relative;
-  bottom: -25px;
+  bottom: 50px;
   margin-bottom: 50px;
   display: inline-block;
 }
+
 .institute {
   font-size: 12pt;
 }
+
 .date {
   font-size: 12pt;
 }

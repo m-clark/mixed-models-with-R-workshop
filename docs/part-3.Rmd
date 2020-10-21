@@ -2,7 +2,7 @@
 title: "<span class='title'>Mixed Models</span>"
 subtitle: "<span class='subtitle'>Common Extensions</span>"
 author: "<span class='author'>Michael Clark</span>"
-institute: "<span class='institute'>m-clark.github.io <br> @statsdatasci <br> CSCAR, UM</span>"
+institute: "<span class='institute'><br>m-clark.github.io <br> @statsdatasci <br> CSCAR, UM</span>"
 date: "<span class='date'>2020-10-21</span>"
 css: style.css
 output:
@@ -206,7 +206,9 @@ class: inverse
 
 # Example: Crossed 
 
-```{r cross_classified}
+```{r cross_classified, eval = -1}
+load('data/pupils.RData')
+
 pupils_crossed = lmer(
   achievement ~ sex + ses 
   + (1|primary_school_id) + (1|secondary_school_id),
@@ -277,7 +279,9 @@ class: inverse
 
 Different ways to do this.
 
-```{r eval=T}
+```{r eval=-1}
+load('data/nurses.RData')
+
 nurses_hierarchical = lmer(
   stress ~ age + sex + experience + treatment + wardtype + hospsize
   + (1 | hospital) + (1 | hospital:ward),
@@ -735,7 +739,7 @@ Interpretation of fixed effects similar to GLM
 However, these are not population averages
 
 Conditional on the random effects:
-- Not exactly the same as they are in LM
+- Not exactly the same as they are in GLM
 - Slightly larger vs. GEE or basic logistic
 
 ---
